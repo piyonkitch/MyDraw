@@ -156,43 +156,19 @@ namespace MyDraw
             pic.Image = canvas;
         }
 
+
+        // picturebox のクリックをひろう
         Point sPoint = new Point(-1, -1);   // 始点
         Point ePoint = new Point(-1, -1);   // 終点
         int iLineNo = 0;                    // 線分の番号
         int iPointNo = 0;                   // 点の番号
-        // picturebox のクリックをひろう
+        EntityLine entityLineTemp = null;   // 指定途中の線
+
         private void pic_MouseClick(object sender, MouseEventArgs e)
         {
-//           Console.WriteLine(e.X.ToString() + "," + e.Y.ToString());
-//           if (sPoint.X == -1 && sPoint.Y == -1)
-//           {
-//               sPoint.X = e.X;
-//               sPoint.Y = e.Y;
-//               return;
-//           }
-//           if (ePoint.X == -1 && ePoint.Y == -1)
-//           {
-//               //                string routestr;
-//
-//               // 線分をリストに追加
-//               ePoint.X = e.X;
-//               ePoint.Y = e.Y;
-//
-//               Entity entLine = new EntityLine("L"+iLineNo, sPoint, ePoint);
-//               logic.Entitylist.Add(entLine);
-//               iLineNo++;
-//
-//               // プログラムテスト用
-//               Entity ent = new Entity("P"+iPointNo, sPoint.X + 10, sPoint.Y + 10);
-//               logic.Entitylist.Add(ent);
-//               iPointNo++;
-//
-//               sPoint.X = sPoint.Y = ePoint.X = ePoint.Y = -1;
-//
-//               return;
- //           }
+            ; // 注：MouseClickの代わりに、MouseDown()とMouseUp()で処理しています。
         }
-        // MouseClickの代わりに、MouseDown()とMouseUp()で処理してみる
+        // MouseClickの代わりに、MouseDown()とMouseUp()で処理
         private void pic_MouseDown(object sender, MouseEventArgs e)
         {
             Console.WriteLine(e.X.ToString() + "," + e.Y.ToString());
@@ -224,9 +200,36 @@ namespace MyDraw
             iPointNo++;
 
             sPoint.X = sPoint.Y = ePoint.X = ePoint.Y = -1;
+            if(entityLineTemp != null)
+            {
+                logic.Entitylist.Remove(entityLineTemp);
+                iLineNo--;
+            }
 
             return;
         }
+        private void pic_MouseMove(object sender, MouseEventArgs e)
+        {
+            textBoxStatus.Text = e.X.ToString() + "," + e.Y.ToString();
+            if(sPoint.X >= 0 && sPoint.Y >= 0)
+            {
+                if (entityLineTemp != null)
+                {
+                    logic.Entitylist.Remove(entityLineTemp);
+                    iLineNo--;
+                }
+
+                // 指定線を引いているので、ダミー線を追加
+                // 「一時的な」線分をリストに追加
+                ePoint.X = e.X;
+                ePoint.Y = e.Y;
+                entityLineTemp = new EntityLine("", sPoint, ePoint);
+                logic.Entitylist.Add(entityLineTemp);
+                iLineNo++;
+                ePoint.X = ePoint.Y = -1;
+            }
+        }
+
         /// <summary>
         /// Show entities in elist
         /// </summary>
@@ -272,11 +275,5 @@ namespace MyDraw
                 get { return System.Text.Encoding.UTF8; }
             }
         }
-
-        private void pic_MouseMove(object sender, MouseEventArgs e)
-        {
-            textBoxStatus.Text = e.X.ToString() + "," + e.Y.ToString();
-        }
-
     }
 }
