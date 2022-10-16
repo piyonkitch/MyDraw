@@ -203,7 +203,6 @@ namespace MyDraw
             if(entityLineTemp != null)
             {
                 logic.Entitylist.Remove(entityLineTemp);
-                iLineNo--;
             }
 
             return;
@@ -216,7 +215,6 @@ namespace MyDraw
                 if (entityLineTemp != null)
                 {
                     logic.Entitylist.Remove(entityLineTemp);
-                    iLineNo--;
                 }
 
                 // 指定線を引いているので、ダミー線を追加
@@ -225,7 +223,6 @@ namespace MyDraw
                 ePoint.Y = e.Y;
                 entityLineTemp = new EntityLine("", sPoint, ePoint);
                 logic.Entitylist.Add(entityLineTemp);
-                iLineNo++;
                 ePoint.X = ePoint.Y = -1;
             }
         }
