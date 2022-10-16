@@ -49,7 +49,7 @@ namespace MyDraw
         public MyDraw()
         {
             InitializeComponent();
-            // Console.WriteLine()先を入れ替える
+            // Console.WriteLine()先にtextBoxConsoleを追加
             Console.SetOut(new TextBoxWriter(textBoxConsole));
 
             // Tick count timer at 10ms
@@ -62,11 +62,6 @@ namespace MyDraw
             // GUIへのイベントハンドラをここで追加
             // pic(キャンバス)
             this.pic.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pic_MouseClick);
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
         }
 
         /// <summary>

@@ -97,7 +97,6 @@
             this.Controls.Add(this.pic);
             this.Name = "MyDraw";
             this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pic)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
