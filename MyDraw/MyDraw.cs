@@ -182,8 +182,22 @@ namespace MyDraw
             // 線分をリストに追加
             ePoint.X = e.X;
             ePoint.Y = e.Y;
+            // pic_MouseMove()と同じ処理
+            if (Control.ModifierKeys == Keys.Shift)
+            {
+                if (Math.Abs(ePoint.X - sPoint.X) > Math.Abs(ePoint.Y - sPoint.Y))
+                {
+                    // X方向の移動なので、Y固定
+                    ePoint.Y = sPoint.Y;
+                }
+                else
+                {
+                    // Y方向の移動なので、X固定
+                    ePoint.X = sPoint.X;
+                }
+            }
 
-            if(Math.Sqrt(Math.Pow(ePoint.X - sPoint.X, 2) + Math.Pow(ePoint.Y - sPoint.Y, 2)) <= 10)    // HARD CODE 10
+            if (Math.Sqrt(Math.Pow(ePoint.X - sPoint.X, 2) + Math.Pow(ePoint.Y - sPoint.Y, 2)) <= 10)    // HARD CODE 10
             {
                 // 近すぎる2点は線としない
                 sPoint.X = sPoint.Y = ePoint.X = ePoint.Y = -1;
@@ -210,7 +224,7 @@ namespace MyDraw
         private void pic_MouseMove(object sender, MouseEventArgs e)
         {
             textBoxStatus.Text = e.X.ToString() + "," + e.Y.ToString();
-            if(sPoint.X >= 0 && sPoint.Y >= 0)
+            if (sPoint.X >= 0 && sPoint.Y >= 0)
             {
                 if (entityLineTemp != null)
                 {
@@ -221,6 +235,19 @@ namespace MyDraw
                 // 「一時的な」線分をリストに追加
                 ePoint.X = e.X;
                 ePoint.Y = e.Y;
+                if (Control.ModifierKeys == Keys.Shift)
+                {
+                    if (Math.Abs(ePoint.X - sPoint.X) > Math.Abs(ePoint.Y - sPoint.Y))
+                    {
+                        // X方向の移動なので、Y固定
+                        ePoint.Y = sPoint.Y;
+                    }
+                    else
+                    {
+                        // Y方向の移動なので、X固定
+                        ePoint.X = sPoint.X;
+                    }
+                }
                 entityLineTemp = new EntityLine("", sPoint, ePoint);
                 logic.Entitylist.Add(entityLineTemp);
                 ePoint.X = ePoint.Y = -1;
