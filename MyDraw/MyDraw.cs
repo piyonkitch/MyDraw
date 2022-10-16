@@ -1,4 +1,28 @@
-﻿using System;
+﻿/*
+Copyright(c) 2022, piyonkitch<kazuo.horikawa.ko@gmail.com>
+All rights reserved.
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+* Neither the name of roguelike nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED.IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,6 +35,7 @@ using System.Windows.Forms;
 
 // Console.WriteLine()先を入れ替える
 using System.IO;
+using System.Drawing.Drawing2D;
 
 namespace MyDraw
 {
@@ -45,7 +70,7 @@ namespace MyDraw
         }
 
         /// <summary>
-        /// Display all the entities on the Form1.pic
+        /// Display all the entities on MyDraw.pic
         /// </summary>
         private void show()
         {
@@ -61,8 +86,12 @@ namespace MyDraw
             Pen penRockRec = new Pen(Color.Red, 1);  // Recognized rock
             Pen penCrash = new Pen(Color.Red, 1);
             Pen penBullet = new Pen(Color.White, 1);
-            Font fnt = new Font("Arial", 12);
+            Font fnt = new Font("Arial", 10);
+            // 線分は白の矢印線
             Pen penLine = new Pen(Color.White, 1);
+            penLine.CustomEndCap = new System.Drawing.Drawing2D.AdjustableArrowCap(4, 4);
+            // 補助線は明るい緑色の線
+            Pen penLineSupport = new Pen(Color.LightGreen, 1);
 
 #if false
             // ぐりぐり回転はうまくいっていない
@@ -72,14 +101,13 @@ namespace MyDraw
             g.TranslateTransform(-(float)myship.xpos, -(float)myship.ypos);
 #endif
 
+            // 過去の残骸
             g.DrawRectangle(
                 penRock,
                 (int)100, (int)100, 4 /* w */, 4 /* h */);
-
-
+            // 過去の残骸
             g.DrawEllipse(penBullet, 200, 200, 3 /* w */, 3 /* h */);
-            
-
+            // 過去の残骸
             g.DrawLine(penShip,
                 (float)50,
                 (float)200,
@@ -89,16 +117,27 @@ namespace MyDraw
             g.DrawString("MyShip", fnt, Brushes.White,
                 (float)50.0 + 8, (float)200 + 8);
 
-            foreach(Entity ent in logic.entitylist)
+            foreach (Entity ent in logic.Entitylist)
             {
                 // 各クラスにDrawさせてもよいが、描画はここで一元管理
-                if(ent.GetType() == typeof(EntityLine))
+                if (ent.GetType() == typeof(EntityLine))
                 {
-                    g.DrawLine(penLine, ((EntityLine)ent).StartPoint, ((EntityLine)ent).EndPoint);
+                    if (((EntityLine)ent).IsSupport)
+                    {
+                        g.DrawLine(penLineSupport, ((EntityLine)ent).StartPoint, ((EntityLine)ent).EndPoint);
+                    }
+                    else
+                    {
+                        g.DrawLine(penLine, ((EntityLine)ent).StartPoint, ((EntityLine)ent).EndPoint);
+                    }
+                    g.DrawString(ent.Name, fnt, Brushes.White,
+                        (float)ent.CenterPoint.X + 4, (float)ent.CenterPoint.Y + 4);
                 }
-                else if(ent.GetType() == typeof(Entity))
+                else if (ent.GetType() == typeof(Entity))
                 {
-                    g.DrawEllipse(penBullet, ent.StartPoint.X, ent.StartPoint.Y, 3 /* w */, 3 /* h */);
+                    g.DrawEllipse(penBullet, ent.CenterPoint.X, ent.CenterPoint.Y, 3 /* w */, 3 /* h */);
+                    g.DrawString(ent.Name, fnt, Brushes.White,
+                        (float)ent.CenterPoint.X + 4, (float)ent.CenterPoint.Y + 4);
                 }
             }
 
@@ -110,6 +149,7 @@ namespace MyDraw
             penBullet.Dispose();
             fnt.Dispose();
             penLine.Dispose();
+            penLineSupport.Dispose();
             g.Dispose();
 
             // Display canvas on "pic"
@@ -118,40 +158,77 @@ namespace MyDraw
 
         Point sPoint = new Point(-1, -1);   // 始点
         Point ePoint = new Point(-1, -1);   // 終点
+        int iLineNo = 0;                    // 線分の番号
+        int iPointNo = 0;                   // 点の番号
         // picturebox のクリックをひろう
         private void pic_MouseClick(object sender, MouseEventArgs e)
         {
-
+//           Console.WriteLine(e.X.ToString() + "," + e.Y.ToString());
+//           if (sPoint.X == -1 && sPoint.Y == -1)
+//           {
+//               sPoint.X = e.X;
+//               sPoint.Y = e.Y;
+//               return;
+//           }
+//           if (ePoint.X == -1 && ePoint.Y == -1)
+//           {
+//               //                string routestr;
+//
+//               // 線分をリストに追加
+//               ePoint.X = e.X;
+//               ePoint.Y = e.Y;
+//
+//               Entity entLine = new EntityLine("L"+iLineNo, sPoint, ePoint);
+//               logic.Entitylist.Add(entLine);
+//               iLineNo++;
+//
+//               // プログラムテスト用
+//               Entity ent = new Entity("P"+iPointNo, sPoint.X + 10, sPoint.Y + 10);
+//               logic.Entitylist.Add(ent);
+//               iPointNo++;
+//
+//               sPoint.X = sPoint.Y = ePoint.X = ePoint.Y = -1;
+//
+//               return;
+ //           }
+        }
+        // MouseClickの代わりに、MouseDown()とMouseUp()で処理してみる
+        private void pic_MouseDown(object sender, MouseEventArgs e)
+        {
             Console.WriteLine(e.X.ToString() + "," + e.Y.ToString());
-            if (sPoint.X == -1 && sPoint.Y == -1)
-            {
-                sPoint.X = e.X;
-                sPoint.Y = e.Y;
-                return;
-            }
-            if (ePoint.X == -1 && ePoint.Y == -1)
-            {
-                //                string routestr;
-
-                // 線分をリストに追加
-                ePoint.X = e.X;
-                ePoint.Y = e.Y;
-
-                Entity entLine = new EntityLine(sPoint, ePoint);
-                logic.entitylist.Add(entLine);
-                // プログラムテスト用
-                Entity ent = new Entity(sPoint.X + 10, sPoint.Y + 10);
-                logic.entitylist.Add(ent);
-
-                sPoint.X = sPoint.Y = ePoint.X = ePoint.Y = -1;
-
-
-                return;
-            }
+            sPoint.X = e.X;
+            sPoint.Y = e.Y;
+            return;
         }
 
+        private void pic_MouseUp(object sender, MouseEventArgs e)
+        {
+            // 線分をリストに追加
+            ePoint.X = e.X;
+            ePoint.Y = e.Y;
+
+            if(Math.Sqrt(Math.Pow(ePoint.X - sPoint.X, 2) + Math.Pow(ePoint.Y - sPoint.Y, 2)) <= 10)    // HARD CODE 10
+            {
+                // 近すぎる2点は線としない
+                sPoint.X = sPoint.Y = ePoint.X = ePoint.Y = -1;
+                return;
+            }
+
+            Entity entLine = new EntityLine("L" + iLineNo, sPoint, ePoint);
+            logic.Entitylist.Add(entLine);
+            iLineNo++;
+
+            // プログラムテスト用
+            Entity ent = new Entity("P" + iPointNo, sPoint.X + 10, sPoint.Y + 10);
+            logic.Entitylist.Add(ent);
+            iPointNo++;
+
+            sPoint.X = sPoint.Y = ePoint.X = ePoint.Y = -1;
+
+            return;
+        }
         /// <summary>
-        /// Move entities in elist
+        /// Show entities in elist
         /// </summary>
         /// <param name="sender">Event sender (not used)</param>
         /// <param name="e">Event (not used)</param>
@@ -159,6 +236,19 @@ namespace MyDraw
         {
             // Display entities in GUI
             show();
+        }
+
+        //
+        // 以下、ボタンで駆動される処理
+        //
+        private void ButtonSort_Click(object sender, EventArgs e)
+        {
+            logic.CtrlSort();
+        }
+
+        private void buttonSupport_Click(object sender, EventArgs e)
+        {
+            logic.CtrlSupportLine();
         }
 
         // コンソールをテキストボックスに出力するおまじない
@@ -182,5 +272,11 @@ namespace MyDraw
                 get { return System.Text.Encoding.UTF8; }
             }
         }
+
+        private void pic_MouseMove(object sender, MouseEventArgs e)
+        {
+            textBoxStatus.Text = e.X.ToString() + "," + e.Y.ToString();
+        }
+
     }
 }

@@ -24,35 +24,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Drawing;
-
 namespace MyDraw
 {
-    [Serializable]
-
-    // MyDrawで使用する描画パーツの親クラス
-    class Entity
+    class Constant
     {
-        public Point CenterPoint { get; set; }
-        public virtual string Name { get; set; }    // 名前
-
-        public Entity(string name, Point point)
-        {
-            Name = name;
-            CenterPoint = point;
-        }
-
-        public Entity(string name, int x, int y)
-        {
-            Name = name;
-            CenterPoint = new Point(x, y);
-        }
+        public const int CANVAS_SIZE_X = 400;
+        public const int CANVAS_SIZE_Y = 400;
+        public const int CANVAS_CENTER_X = 200;   // 半分
+        public const int CANVAS_CENTER_Y = 200;   // 半分
     }
 }
