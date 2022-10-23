@@ -35,7 +35,7 @@ namespace MyDraw
     class EntityLineForSort
     {
         internal EntityLine entityLine; // 線分
-        internal double dRad;           // 角度
+        internal double dRadNCcw;       // 角度
     };
 
     class Logic
@@ -65,10 +65,12 @@ namespace MyDraw
                 if (ent.GetType() == typeof(EntityLine))
                 {
                     EntityLineForSort entForSort = new EntityLineForSort();
-                    entForSort.dRad = 
+                    double dRad;
+                    dRad = 
                         Math.Atan2((double)(- (ent.CenterPoint.Y - Constant.CANVAS_CENTER_Y)) /* REVISIT ここでYを反転したけど、後で変更するかも */,
                                    (double)(   ent.CenterPoint.X - Constant.CANVAS_CENTER_X));
-                    Console.WriteLine(entForSort.dRad);
+                    entForSort.dRadNCcw = Tool.dRadToRadNCcw(dRad);
+                    Console.WriteLine(entForSort.dRadNCcw);
                     // 線分を覚えておく
                     entForSort.entityLine = (EntityLine)ent;
                     entityLinesForSortList.Add(entForSort);
@@ -77,30 +79,45 @@ namespace MyDraw
 
                     // StartとEndがCCWになるようにする
                     bool doSwap = false;
-                    double dRadStart, dRadEnd;
+                    double dRadStart, dRadEnd;              // (1, 0)が0の角度
+                    double dRadNCcwStart, dRadNCcwEnd;      // (0, 1)が0の角度
+                    double dRadDiff;                        // 終点位置の中央から見た角度 - 始点位置の中央から見た角度
                     dRadStart =
                         Math.Atan2((double)(-(((EntityLine)ent).StartPoint.Y - Constant.CANVAS_CENTER_Y)) /* REVISIT ここでYを反転したけど、後で変更するかも */,
                                    (double)(  ((EntityLine)ent).StartPoint.X - Constant.CANVAS_CENTER_X));
+                    dRadNCcwStart = Tool.dRadToRadNCcw(dRadStart);
+                    Console.WriteLine("dRadNCcwStart=" + dRadNCcwStart);
+
                     dRadEnd =
                         Math.Atan2((double)(-(((EntityLine)ent).EndPoint.Y - Constant.CANVAS_CENTER_Y)) /* REVISIT ここでYを反転したけど、後で変更するかも */,
                                    (double)(  ((EntityLine)ent).EndPoint.X - Constant.CANVAS_CENTER_X));
-                    if (dRadEnd - dRadStart <= Math.PI && dRadEnd - dRadStart >= -Math.PI)
+                    dRadNCcwEnd = Tool.dRadToRadNCcw(dRadEnd);
+                    Console.WriteLine("dRadNCcwEnd=" + dRadNCcwEnd);
+
+                    dRadDiff = dRadNCcwEnd - dRadNCcwStart;
+                    if(dRadDiff > Math.PI * 2)
                     {
-                        if (dRadEnd - dRadStart >= 0)
-                        {
-                            doSwap = false;
-                        }
-                        else
-                        {
-                            doSwap = true;
-                        }
+                        dRadDiff -= Math.PI * 2;
+                        Console.WriteLine("-2PI");
                     }
-                    else if (dRadEnd - dRadStart > Math.PI)
+                    if (dRadDiff < -Math.PI * 2)
+                    {
+                        dRadDiff += Math.PI * 2;
+                        Console.WriteLine("+2PI");
+                    }
+
+                    Console.WriteLine("dRadNCcwEnd-dRadNCcwwStart=" + dRadDiff.ToString());
+                    if ((dRadDiff > 0) && (dRadDiff <= Math.PI))
+                    {
+                        doSwap = false;
+                    }
+                    else if ((dRadDiff < 0) && (dRadDiff <= -Math.PI))
+                    {
+                        doSwap = false;
+                    }
+                    else
                     {
                         doSwap = true;
-                    } else // if ( dRadEnd - dRadStart < -Math.PI)
-                    {
-                        doSwap = false; // 後で確認
                     }
                     if(doSwap)
                     {
@@ -119,7 +136,7 @@ namespace MyDraw
             }
 
             // 線分をソート
-            IOrderedEnumerable<EntityLineForSort> entityLinesForSortOrderBy = entityLinesForSortList.OrderBy(o => o.dRad);
+            IOrderedEnumerable<EntityLineForSort> entityLinesForSortOrderBy = entityLinesForSortList.OrderBy(o => o.dRadNCcw);
             foreach (EntityLineForSort ent in entityLinesForSortOrderBy)
             {
                 entityList.Add(ent.entityLine);
