@@ -46,7 +46,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Tool.cs" />
     <Compile Include="Constant.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="EntityLine.cs" />
