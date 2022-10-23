@@ -82,25 +82,28 @@ namespace MyDraw
                     double dRadStart, dRadEnd;              // (1, 0)が0の角度
                     double dRadNCcwStart, dRadNCcwEnd;      // (0, 1)が0の角度
                     double dRadDiff;                        // 終点位置の中央から見た角度 - 始点位置の中央から見た角度
-
                     dRadStart =
                         Math.Atan2((double)(-(((EntityLine)ent).StartPoint.Y - Constant.CANVAS_CENTER_Y)) /* REVISIT ここでYを反転したけど、後で変更するかも */,
                                    (double)(  ((EntityLine)ent).StartPoint.X - Constant.CANVAS_CENTER_X));
                     dRadNCcwStart = Tool.dRadToRadNCcw(dRadStart);
+                    Console.WriteLine("dRadNCcwStart=" + dRadNCcwStart);
 
                     dRadEnd =
                         Math.Atan2((double)(-(((EntityLine)ent).EndPoint.Y - Constant.CANVAS_CENTER_Y)) /* REVISIT ここでYを反転したけど、後で変更するかも */,
                                    (double)(  ((EntityLine)ent).EndPoint.X - Constant.CANVAS_CENTER_X));
                     dRadNCcwEnd = Tool.dRadToRadNCcw(dRadEnd);
+                    Console.WriteLine("dRadNCcwEnd=" + dRadNCcwEnd);
 
                     dRadDiff = dRadNCcwEnd - dRadNCcwStart;
                     if(dRadDiff > Math.PI * 2)
                     {
                         dRadDiff -= Math.PI * 2;
+                        Console.WriteLine("-2PI");
                     }
                     if (dRadDiff < -Math.PI * 2)
                     {
                         dRadDiff += Math.PI * 2;
+                        Console.WriteLine("+2PI");
                     }
 
                     Console.WriteLine("dRadNCcwEnd-dRadNCcwwStart=" + dRadDiff.ToString());
