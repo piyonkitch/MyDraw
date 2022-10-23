@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace MyDraw
@@ -119,7 +120,7 @@ namespace MyDraw
             }
 
             // 線分をソート
-            IOrderedEnumerable<EntityLineForSort> entityLinesForSortOrderBy = entityLinesForSortList.OrderBy(o => o.dRad);
+            IOrderedEnumerable<EntityLineForSort> entityLinesForSortOrderBy = entityLinesForSortList.OrderBy(o => o.dRad < Math.PI / 2 ? o.dRad + Math.PI * 2 : o.dRad);
             foreach (EntityLineForSort ent in entityLinesForSortOrderBy)
             {
                 entityList.Add(ent.entityLine);
