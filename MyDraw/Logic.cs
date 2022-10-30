@@ -118,11 +118,11 @@ namespace MyDraw
                         ((EntityLine)ent).StartPoint = pointTmp;
                     }
                 }
-                // 点
-                else if (ent.GetType() == typeof(Entity))
-                {
-                    entityListOut.Add(ent);
-                }
+//                // 点
+//                else if (ent.GetType() == typeof(Entity))
+//                {
+//                    entityListOut.Add(ent);
+//                }
             }
 
             // 線分をソート
@@ -184,18 +184,34 @@ namespace MyDraw
         {
             List<Entity> entityList;
 
-            // 描画の間引き
-            if (iObjectMotionDelay++ < 5)    // HARD CODE
+            // 右側のpicture box更新タイミング？
+            iObjectMotionDelay++;
+            if (iObjectMotionDelay < 100)
             {
                 return;
             }
             iObjectMotionDelay = 0;
 
-            entityList = Entitylist;    // コピー or クローンどっち？
-            // まずはソート
+            // 補助線以外をコピー
+            entityList = new List<Entity>();
+            foreach (Entity ent in Entitylist)
+            {
+                if (ent.GetType() == typeof(EntityLine))
+                {
+                    if (((EntityLine)ent).IsSupport == false)
+                    {
+                        entityList.Add(ent);
+                    }
+                }
+            }
+            // ソート
+            Console.WriteLine("entityList.Count() old = " + entityList.Count());
             entityList = Sort(entityList);
+            Console.WriteLine("entityList.Count() new = " + entityList.Count());
             // 補助線
             entityList = AddSupportLine(entityList);
+            Console.WriteLine("entityList.Count() after Support = " + entityList.Count());
+
 
             // EntityListOMが最終成果物
             EntitylistOM = new List<Entity>();
@@ -205,19 +221,22 @@ namespace MyDraw
                 // 線分だけ追加
                 if (ent.GetType() == typeof(EntityLine))
                 {
-                    if (i >= iObjectMotionCnt - 1 && i <= iObjectMotionCnt) // HARD CODE
+                    if (i < iObjectMotionCnt)
                     {
                         EntitylistOM.Add(ent);
                     }
                     i++;
                 }
-                iObjectMotionCnt++;
-                if (iObjectMotionCnt > EntitylistOM.Count())
-                {
-                    // 最初の線分から書き直し
-                    iObjectMotionCnt = 0;
-                }
             }
+
+            // 何本目の線？
+            iObjectMotionCnt++;
+            if (iObjectMotionCnt > entityList.Count())
+            {
+                // 最初の線分から書き直し
+                iObjectMotionCnt = 0;
+            }
+            Console.WriteLine("iObjectMotionCnt = " + iObjectMotionCnt);
         }
     }
 }

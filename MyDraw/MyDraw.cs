@@ -251,19 +251,13 @@ namespace MyDraw
         }
 
         // Timer driven method to update picture box
-        int iDelay = 0;
         private void myTick(object sender, EventArgs e)
         {
             // Display entities in GUI
             show(pic, logic.Entitylist);
             // Display object motion
-            iDelay++;
-            if (iDelay >= 10)
-            {
-                iDelay = 0;
-                logic.CtrlObjectMotion();
-                show(picObjectMotion, logic.EntitylistOM);
-            }
+            logic.CtrlObjectMotion();   // MyDrawから呼ぶのが正しい？
+            show(picObjectMotion, logic.EntitylistOM);
         }
 
         //
