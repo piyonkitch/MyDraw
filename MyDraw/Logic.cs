@@ -41,11 +41,15 @@ namespace MyDraw
 
     class Logic
     {
+        // 描画する方のリスト
         public List<Entity> Entitylist { get; set; }
+        // 動かす方のリスト
+        public List<Entity> EntitylistOM { get; set; }
 
         public Logic()
         {
             Entitylist = new List<Entity>();
+            EntitylistOM = new List<Entity>();
         }
 
         //
@@ -53,14 +57,18 @@ namespace MyDraw
         //
         public void CtrlSort()
         {
+            Entitylist = Sort(Entitylist);
+        }
+        public List<Entity> Sort(IReadOnlyList<Entity> entityListIn)
+        {
             // 最終結果のリスト
-            List<Entity> entityList = new List<Entity>();
+            List<Entity> entityListOut = new List<Entity>();
             // 線分ソート用のリスト
             List<EntityLineForSort> entityLinesForSortList = new List<EntityLineForSort>();
 
             Console.WriteLine("CtrlSort() is called");
 
-            foreach (Entity ent in Entitylist)
+            foreach (Entity ent in entityListIn)
             {
                 // 線分
                 if (ent.GetType() == typeof(EntityLine))
@@ -115,7 +123,7 @@ namespace MyDraw
                 // 点
                 else if (ent.GetType() == typeof(Entity))
                 {
-                    entityList.Add(ent);
+                    entityListOut.Add(ent);
                 }
             }
 
@@ -123,12 +131,11 @@ namespace MyDraw
             IOrderedEnumerable<EntityLineForSort> entityLinesForSortOrderBy = entityLinesForSortList.OrderBy(o => o.dRad < Math.PI / 2 ? o.dRad + Math.PI * 2 : o.dRad);
             foreach (EntityLineForSort ent in entityLinesForSortOrderBy)
             {
-                entityList.Add(ent.entityLine);
+                entityListOut.Add(ent.entityLine);
                 //Console.WriteLine("Rad =" + ent.dRad);
             }
 
-            // Update Entitylist
-            Entitylist = entityList;
+            return entityListOut;
             //Console.WriteLine("Entitylist count={0}", Entitylist.Count().ToString());
         }
 
@@ -172,6 +179,25 @@ namespace MyDraw
             // Update Entitylist
             Entitylist = entityList;
             Console.WriteLine("Entitylist count={0}", Entitylist.Count().ToString());
+        }
+
+        // 補助線を書く
+        public void CtrlObjectMotion()
+        {
+            List<Entity> entityListOut = new List<Entity>();
+
+            foreach (Entity ent in Entitylist)
+            {
+                // 線分
+                if (ent.GetType() == typeof(EntityLine))
+                {
+                    entityListOut.Add(ent);
+                }
+                // 点
+            }
+
+            // Update Entitylist
+            EntitylistOM = entityListOut;
         }
     }
 }
