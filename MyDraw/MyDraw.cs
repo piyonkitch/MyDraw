@@ -67,7 +67,8 @@ namespace MyDraw
         /// <summary>
         /// Display all the entities on MyDraw.pic
         /// </summary>
-        private void show()
+//        private void show()
+        private void show(PictureBox pic, List<Entity>entityList)
         {
             // Bitmap canvas where this application draws lines.
             Bitmap canvas = new Bitmap(pic.Width, pic.Height);
@@ -112,7 +113,7 @@ namespace MyDraw
             g.DrawString("MyShip", fnt, Brushes.White,
                 (float)50.0 + 8, (float)200 + 8);
 
-            foreach (Entity ent in logic.Entitylist)
+            foreach (Entity ent in entityList)
             {
                 // 各クラスにDrawさせてもよいが、描画はここで一元管理
                 if (ent.GetType() == typeof(EntityLine))
@@ -249,15 +250,20 @@ namespace MyDraw
             }
         }
 
-        /// <summary>
-        /// Show entities in elist
-        /// </summary>
-        /// <param name="sender">Event sender (not used)</param>
-        /// <param name="e">Event (not used)</param>
+        // Timer driven method to update picture box
+        int iDelay = 0;
         private void myTick(object sender, EventArgs e)
         {
             // Display entities in GUI
-            show();
+            show(pic, logic.Entitylist);
+            // Display object motion
+            iDelay++;
+            if (iDelay >= 10)
+            {
+                iDelay = 0;
+                logic.CtrlObjectMotion();
+                show(picObjectMotion, logic.EntitylistOM);
+            }
         }
 
         //
@@ -267,10 +273,13 @@ namespace MyDraw
         {
             logic.CtrlSort();
         }
-
-        private void buttonSupport_Click(object sender, EventArgs e)
+        private void ButtonSupport_Click(object sender, EventArgs e)
         {
             logic.CtrlSupportLine();
+        }
+        private void ButtonObjectMotion_Click(object sender, EventArgs e)
+        {
+            logic.CtrlObjectMotion();
         }
 
         // コンソールをテキストボックスに出力するおまじない
@@ -294,5 +303,6 @@ namespace MyDraw
                 get { return System.Text.Encoding.UTF8; }
             }
         }
+
     }
 }
