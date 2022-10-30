@@ -66,8 +66,6 @@ namespace MyDraw
             // 線分ソート用のリスト
             List<EntityLineForSort> entityLinesForSortList = new List<EntityLineForSort>();
 
-            Console.WriteLine("CtrlSort() is called");
-
             foreach (Entity ent in entityListIn)
             {
                 // 線分
@@ -77,7 +75,7 @@ namespace MyDraw
                     entForSort.dRad = 
                         Math.Atan2((double)(- (ent.CenterPoint.Y - Constant.CANVAS_CENTER_Y)) /* REVISIT ここでYを反転したけど、後で変更するかも */,
                                    (double)(   ent.CenterPoint.X - Constant.CANVAS_CENTER_X));
-                    Console.WriteLine(entForSort.dRad);
+                    // Console.WriteLine(entForSort.dRad);
                     // 線分を覚えておく
                     entForSort.entityLine = (EntityLine)ent;
                     entityLinesForSortList.Add(entForSort);
@@ -140,13 +138,11 @@ namespace MyDraw
         }
 
         // 補助線を書く
-        public void CtrlSupportLine()
+        public List<Entity> AddSupportLine(IReadOnlyList<Entity> entityListIn)
         {
-            List<Entity> entityList = new List<Entity>();
+            List<Entity> entityListOut = new List<Entity>();
             EntityLine entityLineLast = null;
             bool isFirstLine = true;
-
-            Console.WriteLine("CtrlSupportLine() is called");
 
             foreach (Entity ent in Entitylist)
             {
@@ -160,44 +156,68 @@ namespace MyDraw
                             // Add support line
                             EntityLine entityLine = new EntityLine("補助線", entityLineLast.EndPoint, ((EntityLine)ent).StartPoint);
                             entityLine.IsSupport = true;
-                            entityList.Add(entityLine);
+                            entityListOut.Add(entityLine);
                         }
                         // remember last orignal line
                         entityLineLast = (EntityLine)ent;
                         isFirstLine = false;
                         // Add original line
-                        entityList.Add(ent);
+                        entityListOut.Add(ent);
                     }
                 }
-                // 点
-                else if (ent.GetType() == typeof(Entity))
-                {
-                    entityList.Add(ent);
-                }
             }
 
             // Update Entitylist
-            Entitylist = entityList;
-            Console.WriteLine("Entitylist count={0}", Entitylist.Count().ToString());
+            return entityListOut;
         }
 
-        // 補助線を書く
+        // 左側のソートを行うボタン
+        public void CtrlSupportLine()
+        {
+            Entitylist = Sort(Entitylist);
+        }
+
+        // モノを動かす
+        int iObjectMotionCnt = 0;
+        int iObjectMotionDelay = 0;
         public void CtrlObjectMotion()
         {
-            List<Entity> entityListOut = new List<Entity>();
+            List<Entity> entityList;
 
-            foreach (Entity ent in Entitylist)
+            // 描画の間引き
+            if (iObjectMotionDelay++ < 5)    // HARD CODE
             {
-                // 線分
+                return;
+            }
+            iObjectMotionDelay = 0;
+
+            entityList = Entitylist;    // コピー or クローンどっち？
+            // まずはソート
+            entityList = Sort(entityList);
+            // 補助線
+            entityList = AddSupportLine(entityList);
+
+            // EntityListOMが最終成果物
+            EntitylistOM = new List<Entity>();
+            int i = 0;
+            foreach (Entity ent in entityList)
+            {
+                // 線分だけ追加
                 if (ent.GetType() == typeof(EntityLine))
                 {
-                    entityListOut.Add(ent);
+                    if (i >= iObjectMotionCnt - 1 && i <= iObjectMotionCnt) // HARD CODE
+                    {
+                        EntitylistOM.Add(ent);
+                    }
+                    i++;
                 }
-                // 点
+                iObjectMotionCnt++;
+                if (iObjectMotionCnt > EntitylistOM.Count())
+                {
+                    // 最初の線分から書き直し
+                    iObjectMotionCnt = 0;
+                }
             }
-
-            // Update Entitylist
-            EntitylistOM = entityListOut;
         }
     }
 }
