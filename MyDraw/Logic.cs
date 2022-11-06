@@ -46,6 +46,8 @@ namespace MyDraw
         // 動かす方のリスト
         public List<Entity> EntitylistOM { get; set; }
 
+        private double[,] dHeat = new double[Constant.CANVAS_SIZE_X, Constant.CANVAS_SIZE_Y];
+
         public Logic()
         {
             Entitylist = new List<Entity>();
@@ -230,8 +232,20 @@ namespace MyDraw
 //                  if (i < iObjectMotionCnt)
                     if (dentityListOMLength + ((EntityLine)ent).Length <= iObjectMotionCnt)
                     {
+                        Entity entPoint;
+                        double dX, dY;
+                        double dT;
+
+                        dT = Math.Atan2((((EntityLine)ent).EndPoint.Y - ((EntityLine)ent).StartPoint.Y), ((EntityLine)ent).EndPoint.X - ((EntityLine)ent).StartPoint.X);
+                        for (int i = 0; i < ((EntityLine)ent).Length; i++)
+                        {
+                            dX = Math.Cos(dT) * i + ((EntityLine)ent).StartPoint.X;
+                            dY = Math.Sin(dT) * i + ((EntityLine)ent).StartPoint.Y;
+                            entPoint = new Entity("", new Point((int)dX, (int)dY));
+                            EntitylistOM.Add(entPoint);
+                        }
+
                         dentityListOMLength += ((EntityLine)ent).Length;
-                        EntitylistOM.Add(ent);
                     }
                     else
                     {
@@ -239,8 +253,8 @@ namespace MyDraw
                         double dX, dY;
                         double dT;
 
+                        // 上と同じ処理なので、後で略すとよい
                         dT = Math.Atan2((((EntityLine)ent).EndPoint.Y - ((EntityLine)ent).StartPoint.Y), ((EntityLine)ent).EndPoint.X - ((EntityLine)ent).StartPoint.X);
-
                         for (int i = 0; i < (iObjectMotionCnt - dentityListOMLength); i++)
                         {
                             dX = Math.Cos(dT) * i + ((EntityLine)ent).StartPoint.X;
