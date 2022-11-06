@@ -37,7 +37,8 @@ namespace MyDraw
     {
         public Point StartPoint { get; set; }
         public Point EndPoint { get; set; }
-        public bool IsSupport = false;          // 補助線の場合true
+        public double Length  { get; }  // StartPointとEndPointの距離
+        public bool IsSupport = false;  // 補助線の場合true
 
         // コンストラクタ
         public EntityLine(string name, Point sPoint, Point ePoint) : base(name, sPoint)
@@ -50,6 +51,8 @@ namespace MyDraw
             base.CenterPoint = point;
             this.StartPoint = sPoint;
             this.EndPoint = ePoint;
+            this.Length = Math.Sqrt(Math.Pow(this.EndPoint.X - this.StartPoint.X, 2.0)
+                                  + Math.Pow(this.EndPoint.Y - this.StartPoint.Y, 2.0));
         }
     }
 }

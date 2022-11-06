@@ -186,10 +186,10 @@ namespace MyDraw
 
             // 右側のpicture box更新タイミング？
             iObjectMotionDelay++;
-            if (iObjectMotionDelay < 100)
-            {
-                return;
-            }
+            // if (iObjectMotionDelay < 100)
+            // {
+            //     return;
+            // }
             iObjectMotionDelay = 0;
 
             // 補助線以外をコピー
@@ -205,38 +205,49 @@ namespace MyDraw
                 }
             }
             // ソート
-            Console.WriteLine("entityList.Count() old = " + entityList.Count());
+//            Console.WriteLine("entityList.Count() old = " + entityList.Count());
             entityList = Sort(entityList);
-            Console.WriteLine("entityList.Count() new = " + entityList.Count());
+//            Console.WriteLine("entityList.Count() new = " + entityList.Count());
             // 補助線
             entityList = AddSupportLine(entityList);
-            Console.WriteLine("entityList.Count() after Support = " + entityList.Count());
+//            Console.WriteLine("entityList.Count() after Support = " + entityList.Count());
 
+            // 長さ
+            double dentityListLength = 0.0;
+            foreach (Entity ent in entityList)
+            {
+                dentityListLength += ((EntityLine)ent).Length;
+            }
 
             // EntityListOMが最終成果物
             EntitylistOM = new List<Entity>();
-            int i = 0;
+            double dentityListOMLength = 0.0;
             foreach (Entity ent in entityList)
             {
                 // 線分だけ追加
                 if (ent.GetType() == typeof(EntityLine))
                 {
-                    if (i < iObjectMotionCnt)
+//                  if (i < iObjectMotionCnt)
+                    if (dentityListOMLength + ((EntityLine)ent).Length <= iObjectMotionCnt)
                     {
+                        dentityListOMLength += ((EntityLine)ent).Length;
                         EntitylistOM.Add(ent);
                     }
-                    i++;
+                    else
+                    {
+                        break; // foreach()
+                    }
                 }
             }
 
-            // 何本目の線？
+            // 長さ1だけ足す
             iObjectMotionCnt++;
-            if (iObjectMotionCnt > entityList.Count())
+            if (iObjectMotionCnt > dentityListLength + 1)
             {
                 // 最初の線分から書き直し
                 iObjectMotionCnt = 0;
             }
-            Console.WriteLine("iObjectMotionCnt = " + iObjectMotionCnt);
+//          Console.WriteLine("iObjectMotionCnt = " + iObjectMotionCnt);
         }
     }
 }

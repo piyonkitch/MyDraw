@@ -149,10 +149,10 @@ namespace MyDraw
             g.Dispose();
 
             // ひだりがわだけ
-            if( pic == this.pic)
-            {
-                Console.WriteLine("200, 200=" + canvas.GetPixel(200, 200).GetBrightness());
-            }
+//          if( pic == this.pic)
+//          {
+//                Console.WriteLine("200, 200=" + canvas.GetPixel(200, 200).GetBrightness());
+//          }
 
             // Display canvas on "pic"
             pic.Image = canvas;
