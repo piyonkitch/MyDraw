@@ -235,6 +235,19 @@ namespace MyDraw
                     }
                     else
                     {
+                        Entity entPoint;
+                        double dX, dY;
+                        double dT;
+
+                        dT = Math.Atan2((((EntityLine)ent).EndPoint.Y - ((EntityLine)ent).StartPoint.Y), ((EntityLine)ent).EndPoint.X - ((EntityLine)ent).StartPoint.X);
+
+                        for (int i = 0; i < (iObjectMotionCnt - dentityListOMLength); i++)
+                        {
+                            dX = Math.Cos(dT) * i + ((EntityLine)ent).StartPoint.X;
+                            dY = Math.Sin(dT) * i + ((EntityLine)ent).StartPoint.Y;
+                            entPoint = new Entity("", new Point((int)dX, (int)dY));
+                            EntitylistOM.Add(entPoint);
+                        }
                         break; // foreach()
                     }
                 }
