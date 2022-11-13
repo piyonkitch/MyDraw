@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.3.32901.215
+VisualStudioVersion = 17.4.33103.184
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyDraw", "MyDraw\MyDraw.csproj", "{AA134A67-7DD6-412C-ACBB-5BA4A26778BA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyDraw", "MyDraw\MyDraw.csproj", "{B4769B56-9B65-49C5-85C5-4C796C509AF0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AA134A67-7DD6-412C-ACBB-5BA4A26778BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AA134A67-7DD6-412C-ACBB-5BA4A26778BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AA134A67-7DD6-412C-ACBB-5BA4A26778BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AA134A67-7DD6-412C-ACBB-5BA4A26778BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4769B56-9B65-49C5-85C5-4C796C509AF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4769B56-9B65-49C5-85C5-4C796C509AF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4769B56-9B65-49C5-85C5-4C796C509AF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4769B56-9B65-49C5-85C5-4C796C509AF0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {765BEE19-2EAF-4479-BD63-A2915AA2F2E6}
+		SolutionGuid = {8214D859-7CDD-4DD8-8A0E-37E85317AA24}
 	EndGlobalSection
 EndGlobal
