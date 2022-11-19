@@ -64,11 +64,8 @@ namespace MyDraw
             this.pic.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pic_MouseClick);
         }
 
-        /// <summary>
-        /// Display all the entities on MyDraw.pic
-        /// </summary>
-//        private void show()
-        private void show(PictureBox pic, List<Entity>entityList)
+        // Display all entities in entityList on pic
+        private void Show(PictureBox pic, List<Entity>entityList)
         {
             // Bitmap canvas where this application draws lines.
             Bitmap canvas = new Bitmap(pic.Width, pic.Height);
@@ -83,8 +80,8 @@ namespace MyDraw
             Pen penCrash = new Pen(Color.Red, 1);
             Pen penBullet = new Pen(Color.White, 1);
             Font fnt = new Font("Arial", 10);
-            // 線分は白の矢印線
-            Pen penLine = new Pen(Color.White, 1);
+            // 線分は白のグレー線
+            Pen penLine = new Pen(Color.LightGray, 1);
             penLine.CustomEndCap = new System.Drawing.Drawing2D.AdjustableArrowCap(4, 4);
             // 補助線は明るい緑色の線
             Pen penLineSupport = new Pen(Color.LightGreen, 1);
@@ -115,7 +112,6 @@ namespace MyDraw
 
             foreach (Entity ent in entityList)
             {
-                // 各クラスにDrawさせてもよいが、描画はここで一元管理
                 if (ent.GetType() == typeof(EntityLine))
                 {
                     if (((EntityLine)ent).IsSupport)
@@ -137,7 +133,6 @@ namespace MyDraw
                 }
             }
 
-            // I heard that these Dispose decrease GC time ...
             penShip.Dispose();
             penRock.Dispose();
             penRockRec.Dispose();
@@ -148,18 +143,70 @@ namespace MyDraw
             penLineSupport.Dispose();
             g.Dispose();
 
-            // ひだりがわだけ
-//          if( pic == this.pic)
-//          {
-//                Console.WriteLine("200, 200=" + canvas.GetPixel(200, 200).GetBrightness());
-//          }
+            pic.Image = canvas;
+        }
+
+        // Display filled polygon
+        private void ShowFillPolygon(PictureBox pic, List<Entity> entityList)
+        {
+            // Bitmap canvas where this application draws lines.
+            Bitmap canvas = new Bitmap(pic.Width, pic.Height);
+            Graphics g = Graphics.FromImage(canvas);
+
+            Font fnt = new Font("Arial", 10);
+            // 線分は白のグレー線
+            Brush brushPolygon = new SolidBrush(Color.White);
+
+            // count up the number of Points
+            long lPointCount;
+            lPointCount = 0;
+            foreach (Entity ent in entityList)
+            {
+                if (ent.GetType() == typeof(EntityLine))
+                {
+                    lPointCount += 2;   // 線分には始点と終点の2点がある。
+                }
+            }
+            // make an array of Point
+            Point[] arrayPoint = new Point[lPointCount];
+            int i = 0;
+            foreach (Entity ent in entityList)
+            {
+                if (ent.GetType() == typeof(EntityLine))
+                {
+                    arrayPoint[i++] = ((EntityLine)ent).StartPoint;
+                    arrayPoint[i++] = ((EntityLine)ent).EndPoint;
+                }
+            }
+            // draw a filled polygon specified by the array of Point
+            g.FillPolygon(brushPolygon, arrayPoint, FillMode.Winding);
+
+            // 塗りつぶしの中の場合は、点を赤くしてみる。
+            for (i = 0; i < lPointCount; i++)
+            {
+                long lCnt = 0;
+
+                lCnt += canvas.GetPixel(arrayPoint[i].X,   arrayPoint[i].Y-1).G;
+                lCnt += canvas.GetPixel(arrayPoint[i].X-1, arrayPoint[i].Y  ).G;
+                lCnt += canvas.GetPixel(arrayPoint[i].X+1, arrayPoint[i].Y  ).G;
+                lCnt += canvas.GetPixel(arrayPoint[i].X,   arrayPoint[i].Y-1).G;
+                lCnt += canvas.GetPixel(arrayPoint[i].X,   arrayPoint[i].Y+1).G;
+                // If five points are all filled, show text
+                if (lCnt == 255 * 5)
+                {
+                    g.DrawString(lCnt.ToString(), fnt, Brushes.Red, arrayPoint[i].X + 8, arrayPoint[i].Y + 8);
+                }
+            }
+
+            fnt.Dispose();
+            brushPolygon.Dispose();
+            g.Dispose();
 
             // Display canvas on "pic"
             pic.Image = canvas;
         }
 
-
-        // picturebox のクリックをひろう
+        // picturebox mouse click, mouse down, mouse up to draw a line
         Point sPoint = new Point(-1, -1);   // 始点
         Point ePoint = new Point(-1, -1);   // 終点
         int iLineNo = 0;                    // 線分の番号
@@ -256,14 +303,24 @@ namespace MyDraw
             }
         }
 
-        // Timer driven method to update picture box
+        // picture switch specified by radio button
+        long lPic2Switch = 0;
+
+        // Timer driven method to update picture boxes
         private void myTick(object sender, EventArgs e)
         {
             // Display entities in GUI
-            show(pic, logic.Entitylist);
+            Show(pic, logic.Entitylist);
             // Display object motion
-            logic.CtrlObjectMotion();   // MyDrawから呼ぶのが正しい？
-            show(picObjectMotion, logic.EntitylistOM);
+            logic.CtrlObjectMotion();
+            if (lPic2Switch == 0)
+            {
+                Show(picObjectMotion, logic.EntitylistOM);
+            }
+            else
+            {
+                ShowFillPolygon(picObjectMotion, logic.Entitylist);
+            }
         }
 
         //
@@ -281,6 +338,17 @@ namespace MyDraw
         {
             logic.CtrlObjectMotion();
         }
+        // シミュレーションを行う
+        private void radioButtonSim_CheckedChanged(object sender, EventArgs e)
+        {
+            lPic2Switch = 0;
+        }
+        // Fillを行う
+        private void radioButtonFill_CheckedChanged(object sender, EventArgs e)
+        {
+            lPic2Switch = 1;
+        }
+
 
         // コンソールをテキストボックスに出力するおまじない
         public class TextBoxWriter : TextWriter
@@ -304,5 +372,9 @@ namespace MyDraw
             }
         }
 
+        private void MyDraw_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
