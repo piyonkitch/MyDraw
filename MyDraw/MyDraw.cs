@@ -182,19 +182,54 @@ namespace MyDraw
             g.FillPolygon(brushPolygon, arrayPoint, FillMode.Winding);
 
             // 塗りつぶしの中の場合は、点を赤くしてみる。
+            long lPointCheckCount = 0;  // 点と上下左右の数
             for (i = 0; i < lPointCount; i++)
             {
                 long lCnt = 0;
 
                 lCnt += canvas.GetPixel(arrayPoint[i].X,   arrayPoint[i].Y-1).G;
-                lCnt += canvas.GetPixel(arrayPoint[i].X-1, arrayPoint[i].Y  ).G;
-                lCnt += canvas.GetPixel(arrayPoint[i].X+1, arrayPoint[i].Y  ).G;
-                lCnt += canvas.GetPixel(arrayPoint[i].X,   arrayPoint[i].Y-1).G;
-                lCnt += canvas.GetPixel(arrayPoint[i].X,   arrayPoint[i].Y+1).G;
-                // If five points are all filled, show text
-                if (lCnt == 255 * 5)
+                if (arrayPoint[i].X > 1)
                 {
-                    g.DrawString(lCnt.ToString(), fnt, Brushes.Red, arrayPoint[i].X + 8, arrayPoint[i].Y + 8);
+                    lCnt += canvas.GetPixel(arrayPoint[i].X - 1, arrayPoint[i].Y).G;
+                    lPointCheckCount++;
+                }
+                if (arrayPoint[i].X < Constant.CANVAS_SIZE_X - 1)
+                {
+                    lCnt += canvas.GetPixel(arrayPoint[i].X + 1, arrayPoint[i].Y).G;
+                    lPointCheckCount++;
+                }
+                if (arrayPoint[i].Y > 1)
+                {
+                    lCnt += canvas.GetPixel(arrayPoint[i].X, arrayPoint[i].Y - 1).G;
+                    lPointCheckCount++;
+                }
+                if (arrayPoint[i].Y < Constant.CANVAS_SIZE_Y - 1)
+                {
+                    lCnt += canvas.GetPixel(arrayPoint[i].X,   arrayPoint[i].Y+1).G;
+                    lPointCheckCount++;
+                }
+
+                Point lTextDiff = new Point(0, 0);
+                if (arrayPoint[i].X < Constant.CANVAS_SIZE_X / 2)
+                {
+                    lTextDiff.X = 8;
+                }
+                if (arrayPoint[i].X > Constant.CANVAS_SIZE_X / 2)
+                {
+                    lTextDiff.X = -8;
+                }
+                if (arrayPoint[i].Y < Constant.CANVAS_SIZE_Y / 2)
+                {
+                    lTextDiff.Y = 8;
+                }
+                if (arrayPoint[i].Y > Constant.CANVAS_SIZE_Y / 2)
+                {
+                    lTextDiff.Y = -8;
+                }
+                // If all five points (if the point has 4 neighbor) are all filled, show text
+                //                if (lCnt == 255 * lPointCheckCount)
+                {
+                    g.DrawString(lCnt.ToString(), fnt, Brushes.Red, arrayPoint[i].X + lTextDiff.X, arrayPoint[i].Y + lTextDiff.Y);
                 }
             }
 
@@ -213,6 +248,29 @@ namespace MyDraw
         int iPointNo = 0;                   // 点の番号
         EntityLine entityLineTemp = null;   // 指定途中の線
 
+        // 受け取ったpointを資格の中に納まるようにする。
+        private void FixPoint(ref Point point)
+        {
+            // Fix X
+            if (point.X < 0)
+            {
+                point.X = 0;
+            }
+            if (point.X >= Constant.CANVAS_SIZE_X)
+            {
+                point.X = Constant.CANVAS_SIZE_X - 1;
+            }
+            // Fix Y
+            if (point.Y < 0)
+            {
+                point.Y = 0;
+            }
+            if (point.Y >= Constant.CANVAS_SIZE_Y)
+            {
+                point.Y = Constant.CANVAS_SIZE_Y - 1;
+            }
+        }
+
         private void pic_MouseClick(object sender, MouseEventArgs e)
         {
             ; // 注：MouseClickの代わりに、MouseDown()とMouseUp()で処理しています。
@@ -223,14 +281,18 @@ namespace MyDraw
             Console.WriteLine(e.X.ToString() + "," + e.Y.ToString());
             sPoint.X = e.X;
             sPoint.Y = e.Y;
+            FixPoint(ref ePoint);
             return;
         }
+
 
         private void pic_MouseUp(object sender, MouseEventArgs e)
         {
             // 線分をリストに追加
             ePoint.X = e.X;
             ePoint.Y = e.Y;
+            FixPoint(ref ePoint);
+
             // pic_MouseMove()と同じ処理
             if (Control.ModifierKeys == Keys.Shift)
             {
@@ -284,6 +346,7 @@ namespace MyDraw
                 // 「一時的な」線分をリストに追加
                 ePoint.X = e.X;
                 ePoint.Y = e.Y;
+                FixPoint(ref ePoint);
                 if (Control.ModifierKeys == Keys.Shift)
                 {
                     if (Math.Abs(ePoint.X - sPoint.X) > Math.Abs(ePoint.Y - sPoint.Y))
