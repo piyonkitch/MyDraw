@@ -229,7 +229,7 @@ namespace MyDraw
                 // If all five points (if the point has 4 neighbor) are all filled, show text
                 //                if (lCnt == 255 * lPointCheckCount)
                 {
-                    g.DrawString(lCnt.ToString(), fnt, Brushes.Red, arrayPoint[i].X + lTextDiff.X, arrayPoint[i].Y + lTextDiff.Y);
+                    g.DrawString(lCnt.ToString(), fnt, Brushes.LightPink, arrayPoint[i].X + lTextDiff.X, arrayPoint[i].Y + lTextDiff.Y);
                 }
             }
 
@@ -405,13 +405,19 @@ namespace MyDraw
         private void radioButtonSim_CheckedChanged(object sender, EventArgs e)
         {
             lPic2Switch = 0;
+            panel2.Enabled = true;
         }
         // Fillを行う
         private void radioButtonFill_CheckedChanged(object sender, EventArgs e)
         {
             lPic2Switch = 1;
+            panel2.Enabled = false;
         }
-
+        // シミュレーション時の更新速度の調整
+        private void TrackBarScroll(object sender, EventArgs e)
+        {
+            logic.iObjectMotionCntDiff = trackBarSpeed.Value;
+        }
 
         // コンソールをテキストボックスに出力するおまじない
         public class TextBoxWriter : TextWriter

@@ -34,13 +34,17 @@
             this.buttonSupport = new System.Windows.Forms.Button();
             this.textBoxStatus = new System.Windows.Forms.TextBox();
             this.picObjectMotion = new System.Windows.Forms.PictureBox();
-            this.buttonObjectMotion = new System.Windows.Forms.Button();
             this.radioButtonSim = new System.Windows.Forms.RadioButton();
             this.radioButtonFill = new System.Windows.Forms.RadioButton();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.trackBarSpeed = new System.Windows.Forms.TrackBar();
+            this.textBoxSpeed = new System.Windows.Forms.TextBox();
+            this.panel2 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.pic)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picObjectMotion)).BeginInit();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).BeginInit();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // pic
@@ -107,24 +111,14 @@
             this.picObjectMotion.TabIndex = 5;
             this.picObjectMotion.TabStop = false;
             // 
-            // buttonObjectMotion
-            // 
-            this.buttonObjectMotion.Location = new System.Drawing.Point(541, 209);
-            this.buttonObjectMotion.Margin = new System.Windows.Forms.Padding(4);
-            this.buttonObjectMotion.Name = "buttonObjectMotion";
-            this.buttonObjectMotion.Size = new System.Drawing.Size(100, 44);
-            this.buttonObjectMotion.TabIndex = 6;
-            this.buttonObjectMotion.Text = "Support Line";
-            this.buttonObjectMotion.UseVisualStyleBackColor = true;
-            this.buttonObjectMotion.Click += new System.EventHandler(this.ButtonObjectMotion_Click);
-            // 
             // radioButtonSim
             // 
             this.radioButtonSim.AutoSize = true;
+            this.radioButtonSim.Checked = true;
             this.radioButtonSim.Location = new System.Drawing.Point(4, 15);
             this.radioButtonSim.Margin = new System.Windows.Forms.Padding(4);
             this.radioButtonSim.Name = "radioButtonSim";
-            this.radioButtonSim.Size = new System.Drawing.Size(82, 19);
+            this.radioButtonSim.Size = new System.Drawing.Size(86, 20);
             this.radioButtonSim.TabIndex = 7;
             this.radioButtonSim.TabStop = true;
             this.radioButtonSim.Text = "Simulate";
@@ -136,7 +130,7 @@
             this.radioButtonFill.AutoSize = true;
             this.radioButtonFill.Location = new System.Drawing.Point(4, 41);
             this.radioButtonFill.Name = "radioButtonFill";
-            this.radioButtonFill.Size = new System.Drawing.Size(45, 19);
+            this.radioButtonFill.Size = new System.Drawing.Size(49, 20);
             this.radioButtonFill.TabIndex = 8;
             this.radioButtonFill.TabStop = true;
             this.radioButtonFill.Text = "Fill";
@@ -152,13 +146,37 @@
             this.panel1.Size = new System.Drawing.Size(192, 138);
             this.panel1.TabIndex = 9;
             // 
+            // trackBarSpeed
+            // 
+            this.trackBarSpeed.Location = new System.Drawing.Point(11, 3);
+            this.trackBarSpeed.Name = "trackBarSpeed";
+            this.trackBarSpeed.Size = new System.Drawing.Size(105, 69);
+            this.trackBarSpeed.TabIndex = 10;
+            this.trackBarSpeed.Scroll += new System.EventHandler(this.TrackBarScroll);
+            // 
+            // textBoxSpeed
+            // 
+            this.textBoxSpeed.Location = new System.Drawing.Point(122, 18);
+            this.textBoxSpeed.Name = "textBoxSpeed";
+            this.textBoxSpeed.Size = new System.Drawing.Size(124, 22);
+            this.textBoxSpeed.TabIndex = 11;
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.trackBarSpeed);
+            this.panel2.Controls.Add(this.textBoxSpeed);
+            this.panel2.Location = new System.Drawing.Point(873, 508);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(271, 61);
+            this.panel2.TabIndex = 12;
+            // 
             // MyDraw
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1336, 676);
+            this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.buttonObjectMotion);
             this.Controls.Add(this.picObjectMotion);
             this.Controls.Add(this.textBoxStatus);
             this.Controls.Add(this.buttonSupport);
@@ -173,6 +191,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.picObjectMotion)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).EndInit();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -186,10 +207,12 @@
         private System.Windows.Forms.Button buttonSupport;
         private System.Windows.Forms.TextBox textBoxStatus;
         private System.Windows.Forms.PictureBox picObjectMotion;
-        private System.Windows.Forms.Button buttonObjectMotion;
         private System.Windows.Forms.RadioButton radioButtonSim;
         private System.Windows.Forms.RadioButton radioButtonFill;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.TrackBar trackBarSpeed;
+        private System.Windows.Forms.TextBox textBoxSpeed;
+        private System.Windows.Forms.Panel panel2;
     }
 }
 

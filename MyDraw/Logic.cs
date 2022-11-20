@@ -45,6 +45,8 @@ namespace MyDraw
         public List<Entity> Entitylist { get; set; }
         // 動かす方のリスト
         public List<Entity> EntitylistOM { get; set; }
+        public int iObjectMotionCntDiff = 1;   // 1 Tickで動かす個数
+
 
         private double[,] dHeat = new double[Constant.CANVAS_SIZE_X, Constant.CANVAS_SIZE_Y];
 
@@ -61,6 +63,13 @@ namespace MyDraw
         {
             Entitylist = Sort(Entitylist);
         }
+
+        public void CtrlSupportLine()
+        {
+            Entitylist = AddSupportLine(Entitylist);
+        }
+
+
         public List<Entity> Sort(IReadOnlyList<Entity> entityListIn)
         {
             // 最終結果のリスト
@@ -120,19 +129,13 @@ namespace MyDraw
                         ((EntityLine)ent).StartPoint = pointTmp;
                     }
                 }
-//                // 点
-//                else if (ent.GetType() == typeof(Entity))
-//                {
-//                    entityListOut.Add(ent);
-//                }
             }
 
-            // 線分をソート
+            // Sort entityLine by Rad starting at PI/2 and ending at 2*PI + PI/2 (CCW starting at 0 oclock)
             IOrderedEnumerable<EntityLineForSort> entityLinesForSortOrderBy = entityLinesForSortList.OrderBy(o => o.dRad < Math.PI / 2 ? o.dRad + Math.PI * 2 : o.dRad);
             foreach (EntityLineForSort ent in entityLinesForSortOrderBy)
             {
                 entityListOut.Add(ent.entityLine);
-                //Console.WriteLine("Rad =" + ent.dRad);
             }
 
             return entityListOut;
@@ -173,27 +176,13 @@ namespace MyDraw
             return entityListOut;
         }
 
-        // 左側のソートを行うボタン
-        public void CtrlSupportLine()
-        {
-            Entitylist = Sort(Entitylist);
-        }
-
         // モノを動かす
         int iObjectMotionCnt = 0;
-        int iObjectMotionDelay = 0;
         public void CtrlObjectMotion()
         {
             List<Entity> entityList;
 
             // 右側のpicture box更新タイミング？
-            iObjectMotionDelay++;
-            // if (iObjectMotionDelay < 100)
-            // {
-            //     return;
-            // }
-            iObjectMotionDelay = 0;
-
             // 補助線以外をコピー
             entityList = new List<Entity>();
             foreach (Entity ent in Entitylist)
@@ -229,7 +218,6 @@ namespace MyDraw
                 // 線分だけ追加
                 if (ent.GetType() == typeof(EntityLine))
                 {
-//                  if (i < iObjectMotionCnt)
                     if (dentityListOMLength + ((EntityLine)ent).Length <= iObjectMotionCnt)
                     {
                         Entity entPoint;
@@ -243,6 +231,7 @@ namespace MyDraw
                             dY = Math.Sin(dT) * i + ((EntityLine)ent).StartPoint.Y;
                             entPoint = new Entity("", new Point((int)dX, (int)dY));
                             EntitylistOM.Add(entPoint);
+                            dHeat[entPoint.CenterPoint.X, entPoint.CenterPoint.Y] += 1;
                         }
 
                         dentityListOMLength += ((EntityLine)ent).Length;
@@ -261,6 +250,7 @@ namespace MyDraw
                             dY = Math.Sin(dT) * i + ((EntityLine)ent).StartPoint.Y;
                             entPoint = new Entity("", new Point((int)dX, (int)dY));
                             EntitylistOM.Add(entPoint);
+                            dHeat[entPoint.CenterPoint.X, entPoint.CenterPoint.Y] += 1;
                         }
                         break; // foreach()
                     }
@@ -268,13 +258,12 @@ namespace MyDraw
             }
 
             // 長さ1だけ足す
-            iObjectMotionCnt++;
+            iObjectMotionCnt += iObjectMotionCntDiff;
             if (iObjectMotionCnt > dentityListLength + 1)
             {
                 // 最初の線分から書き直し
                 iObjectMotionCnt = 0;
             }
-//          Console.WriteLine("iObjectMotionCnt = " + iObjectMotionCnt);
         }
     }
 }
