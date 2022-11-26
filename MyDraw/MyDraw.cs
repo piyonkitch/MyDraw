@@ -36,6 +36,8 @@ using System.Windows.Forms;
 // Console.WriteLine()先を入れ替える
 using System.IO;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.Runtime.InteropServices;
 
 namespace MyDraw
 {
@@ -241,6 +243,119 @@ namespace MyDraw
             pic.Image = canvas;
         }
 
+        private void ShowHeatmap(PictureBox pic, List<Entity> entityList)
+        {
+            // Bitmap canvas where this application draws lines.
+            Bitmap canvas = new Bitmap(pic.Width, pic.Height);
+            Graphics g = Graphics.FromImage(canvas);
+
+            Font fnt = new Font("Arial", 10);
+            // 線分は白のグレー線
+            Pen penLine = new Pen(Color.LightGray, 1);
+
+            // count up the number of Points
+            long lPointCount;
+            lPointCount = 0;
+            foreach (Entity ent in entityList)
+            {
+                if (ent.GetType() == typeof(EntityLine))
+                {
+                    lPointCount += 2;   // 線分には始点と終点の2点がある。
+                }
+            }
+            // make an array of Point
+            Point[] arrayPoint = new Point[lPointCount];
+            int i = 0;
+            foreach (Entity ent in entityList)
+            {
+                if (ent.GetType() == typeof(EntityLine))
+                {
+                    arrayPoint[i++] = ((EntityLine)ent).StartPoint;
+                    arrayPoint[i++] = ((EntityLine)ent).EndPoint;
+                }
+            }
+            // draw a filled polygon specified by the array of Point
+//            g.DrawLines(penLine, arrayPoint);
+
+            // 塗りつぶしの中の場合は、点を赤くしてみる。
+            long lPointCheckCount = 0;  // 点と上下左右の数
+            for (i = 0; i < lPointCount; i++)
+            {
+                long lCnt = 0;
+
+                lCnt += canvas.GetPixel(arrayPoint[i].X, arrayPoint[i].Y - 1).G;
+                if (arrayPoint[i].X > 1)
+                {
+                    lCnt += canvas.GetPixel(arrayPoint[i].X - 1, arrayPoint[i].Y).G;
+                    lPointCheckCount++;
+                }
+                if (arrayPoint[i].X < Constant.CANVAS_SIZE_X - 1)
+                {
+                    lCnt += canvas.GetPixel(arrayPoint[i].X + 1, arrayPoint[i].Y).G;
+                    lPointCheckCount++;
+                }
+                if (arrayPoint[i].Y > 1)
+                {
+                    lCnt += canvas.GetPixel(arrayPoint[i].X, arrayPoint[i].Y - 1).G;
+                    lPointCheckCount++;
+                }
+                if (arrayPoint[i].Y < Constant.CANVAS_SIZE_Y - 1)
+                {
+                    lCnt += canvas.GetPixel(arrayPoint[i].X, arrayPoint[i].Y + 1).G;
+                    lPointCheckCount++;
+                }
+
+            }
+
+            fnt.Dispose();
+            penLine.Dispose();
+            g.Dispose();
+
+            {
+                int cnt = 0;
+                BitmapData data = canvas.LockBits(
+                    new Rectangle(0, 0, canvas.Width, canvas.Height),
+                    ImageLockMode.ReadWrite,
+                    PixelFormat.Format32bppArgb);
+                byte[] buf = new byte[canvas.Width * canvas.Height * 4];
+                Marshal.Copy(data.Scan0, buf, 0, buf.Length);
+                for (int j = 0; j < buf.Length;)
+                {
+                    //byte grey = (byte)(0.299 * buf[j] + 0.587 * buf[j + 1] + 0.114 * buf[j + 2]);
+                    //buf[j++] = grey;
+                    //buf[j++] = grey;
+                    //buf[j++] = grey;
+                    if ((byte)(int)logic.dHeat[(j / 4) / Constant.CANVAS_SIZE_X, (j / 4) % Constant.CANVAS_SIZE_X] != 0)
+                    {
+                        cnt++;
+                    }
+
+                    buf[j++] = (byte)(int)logic.dHeat[(j / 4) / Constant.CANVAS_SIZE_X, (j / 4) % Constant.CANVAS_SIZE_X];
+                    buf[j++] = 0;
+                    buf[j++] = 0;
+                    j++;
+                }
+                Marshal.Copy(buf, 0, data.Scan0, buf.Length);
+                canvas.UnlockBits(data);
+            }
+
+            int x, y;
+            for (y = 0; y < Constant.CANVAS_SIZE_Y; y++)
+            {
+                for (x = 0; x < Constant.CANVAS_SIZE_X; x++)
+                {
+                    if (logic.dHeat[x, y] != 0)
+                    {
+                        canvas.SetPixel(x, y, Color.FromArgb((int)logic.dHeat[x, y], 0, 0));
+                    }
+                }
+            }
+
+            // Display canvas on "pic"
+            pic.Image = canvas;
+
+        }
+
         // picturebox mouse click, mouse down, mouse up to draw a line
         Point sPoint = new Point(-1, -1);   // 始点
         Point ePoint = new Point(-1, -1);   // 終点
@@ -382,7 +497,8 @@ namespace MyDraw
             }
             else
             {
-                ShowFillPolygon(picObjectMotion, logic.Entitylist);
+//                ShowFillPolygon(picObjectMotion, logic.Entitylist);
+                ShowHeatmap(picObjectMotion, logic.Entitylist);
             }
         }
 
@@ -416,7 +532,8 @@ namespace MyDraw
         // シミュレーション時の更新速度の調整
         private void TrackBarScroll(object sender, EventArgs e)
         {
-            logic.iObjectMotionCntDiff = trackBarSpeed.Value;
+            logic.iObjectMotionCntDiff = trackBarSpeed.Value;       // 進めるカウント数
+            textBoxSpeed.Text = "Speed = " + trackBarSpeed.Value;   // 画面表示
         }
 
         // コンソールをテキストボックスに出力するおまじない

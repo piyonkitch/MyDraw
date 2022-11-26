@@ -48,7 +48,7 @@ namespace MyDraw
         public int iObjectMotionCntDiff = 1;   // 1 Tickで動かす個数
 
 
-        private double[,] dHeat = new double[Constant.CANVAS_SIZE_X, Constant.CANVAS_SIZE_Y];
+        public double[,] dHeat = new double[Constant.CANVAS_SIZE_X, Constant.CANVAS_SIZE_Y];
 
         public Logic()
         {
@@ -181,6 +181,7 @@ namespace MyDraw
         public void CtrlObjectMotion()
         {
             List<Entity> entityList;
+            int x, y;
 
             // 右側のpicture box更新タイミング？
             // 補助線以外をコピー
@@ -196,18 +197,24 @@ namespace MyDraw
                 }
             }
             // ソート
-//            Console.WriteLine("entityList.Count() old = " + entityList.Count());
             entityList = Sort(entityList);
-//            Console.WriteLine("entityList.Count() new = " + entityList.Count());
             // 補助線
             entityList = AddSupportLine(entityList);
-//            Console.WriteLine("entityList.Count() after Support = " + entityList.Count());
 
             // 長さ
             double dentityListLength = 0.0;
             foreach (Entity ent in entityList)
             {
                 dentityListLength += ((EntityLine)ent).Length;
+            }
+
+            // Clear heatmap
+            for (y = 0; y < Constant.CANVAS_SIZE_Y; y++)
+            {
+                for (x = 0; x < Constant.CANVAS_SIZE_X; x++)
+                {
+                    dHeat[x, y] = 0.0;
+                }
             }
 
             // EntityListOMが最終成果物
@@ -231,7 +238,7 @@ namespace MyDraw
                             dY = Math.Sin(dT) * i + ((EntityLine)ent).StartPoint.Y;
                             entPoint = new Entity("", new Point((int)dX, (int)dY));
                             EntitylistOM.Add(entPoint);
-                            dHeat[entPoint.CenterPoint.X, entPoint.CenterPoint.Y] += 1;
+                            dHeat[entPoint.CenterPoint.X, entPoint.CenterPoint.Y] += 30;
                         }
 
                         dentityListOMLength += ((EntityLine)ent).Length;
@@ -250,7 +257,7 @@ namespace MyDraw
                             dY = Math.Sin(dT) * i + ((EntityLine)ent).StartPoint.Y;
                             entPoint = new Entity("", new Point((int)dX, (int)dY));
                             EntitylistOM.Add(entPoint);
-                            dHeat[entPoint.CenterPoint.X, entPoint.CenterPoint.Y] += 1;
+                            dHeat[entPoint.CenterPoint.X, entPoint.CenterPoint.Y] += 30;
                         }
                         break; // foreach()
                     }
