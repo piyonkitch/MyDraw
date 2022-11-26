@@ -360,7 +360,9 @@ namespace MyDraw
         Point sPoint = new Point(-1, -1);   // 始点
         Point ePoint = new Point(-1, -1);   // 終点
         int iLineNo = 0;                    // 線分の番号
+#if false
         int iPointNo = 0;                   // 点の番号
+#endif
         EntityLine entityLineTemp = null;   // 指定途中の線
 
         // 受け取ったpointを資格の中に納まるようにする。
@@ -433,16 +435,22 @@ namespace MyDraw
             Entity entLine = new EntityLine("L" + iLineNo, sPoint, ePoint);
             logic.Entitylist.Add(entLine);
             iLineNo++;
-
+#if false
             // プログラムテスト用
             Entity ent = new Entity("P" + iPointNo, sPoint.X + 10, sPoint.Y + 10);
             logic.Entitylist.Add(ent);
             iPointNo++;
-
+#endif
             sPoint.X = sPoint.Y = ePoint.X = ePoint.Y = -1;
             if(entityLineTemp != null)
             {
                 logic.Entitylist.Remove(entityLineTemp);
+            }
+
+            // 線分を追加したので、補助線も追加する
+            if (logic.IsSupportLineValid())
+            {
+                logic.CtrlEnableSupportLine();
             }
 
             return;
@@ -478,6 +486,12 @@ namespace MyDraw
                 entityLineTemp = new EntityLine("", sPoint, ePoint);
                 logic.Entitylist.Add(entityLineTemp);
                 ePoint.X = ePoint.Y = -1;
+
+                // 線分を追加したので、補助線も追加する
+                if (logic.IsSupportLineValid())
+                {
+                    logic.CtrlEnableSupportLine();
+                }
             }
         }
 
@@ -508,10 +522,26 @@ namespace MyDraw
         private void ButtonSort_Click(object sender, EventArgs e)
         {
             logic.CtrlSort();
+            // 線分を追加したので、補助線も追加する
+            if (logic.IsSupportLineValid())
+            {
+                logic.CtrlEnableSupportLine();
+            }
         }
         private void ButtonSupport_Click(object sender, EventArgs e)
         {
             logic.CtrlSupportLine();
+        }
+        private void checkBoxSupport_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxSupport.Checked == false)
+            {
+                logic.CtrlDisableSupportLine();
+            }
+            else
+            {
+                logic.CtrlEnableSupportLine();
+            }
         }
         private void ButtonObjectMotion_Click(object sender, EventArgs e)
         {

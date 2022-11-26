@@ -46,6 +46,7 @@ namespace MyDraw
         // 動かす方のリスト
         public List<Entity> EntitylistOM { get; set; }
         public int iObjectMotionCntDiff = 1;   // 1 Tickで動かす個数
+        private bool SupportLineValid = false;
 
 
         public double[,] dHeat = new double[Constant.CANVAS_SIZE_X, Constant.CANVAS_SIZE_Y];
@@ -55,10 +56,24 @@ namespace MyDraw
             Entitylist = new List<Entity>();
             EntitylistOM = new List<Entity>();
         }
+        public bool IsSupportLineValid()
+        {
+            return SupportLineValid;
+        }
 
         //
         // ユーザ操作から呼ばれる処理
         //
+        public void CtrlEnableSupportLine()
+        {
+            SupportLineValid = true;
+            Entitylist = AddSupportLine(Entitylist);
+        }
+        public void CtrlDisableSupportLine()
+        {
+            SupportLineValid = false;
+            Entitylist = RemoveSupportLine(Entitylist);
+        }
         public void CtrlSort()
         {
             Entitylist = Sort(Entitylist);
@@ -149,7 +164,7 @@ namespace MyDraw
             EntityLine entityLineLast = null;
             bool isFirstLine = true;
 
-            foreach (Entity ent in Entitylist)
+            foreach (Entity ent in entityListIn)
             {
                 // 線分
                 if (ent.GetType() == typeof(EntityLine))
@@ -166,6 +181,28 @@ namespace MyDraw
                         // remember last orignal line
                         entityLineLast = (EntityLine)ent;
                         isFirstLine = false;
+                        // Add original line
+                        entityListOut.Add(ent);
+                    }
+                }
+            }
+
+            // Update Entitylist
+            return entityListOut;
+        }
+
+        // 補助線を削除
+        public List<Entity> RemoveSupportLine(IReadOnlyList<Entity> entityListIn)
+        {
+            List<Entity> entityListOut = new List<Entity>();
+
+            foreach (Entity ent in entityListIn)
+            {
+                // 線分
+                if (ent.GetType() == typeof(EntityLine))
+                {
+                    if (((EntityLine)ent).IsSupport == false)
+                    {
                         // Add original line
                         entityListOut.Add(ent);
                     }
