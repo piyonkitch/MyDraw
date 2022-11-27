@@ -35,7 +35,7 @@ namespace MyDraw
     {
         public const int CANVAS_SIZE_X = 400;
         public const int CANVAS_SIZE_Y = 400;
-        public const int CANVAS_CENTER_X = 200;   // 半分
-        public const int CANVAS_CENTER_Y = 200;   // 半分
+        public const int CANVAS_CENTER_X = CANVAS_SIZE_X / 2;
+        public const int CANVAS_CENTER_Y = CANVAS_SIZE_Y / 2;
     }
 }
