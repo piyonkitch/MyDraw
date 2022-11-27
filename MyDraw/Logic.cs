@@ -165,7 +165,7 @@ namespace MyDraw
             //Console.WriteLine("Entitylist count={0}", Entitylist.Count().ToString());
         }
 
-        // 補助線を書く
+        // 補助線を追加
         public List<Entity> AddSupportLine(IReadOnlyList<Entity> entityListIn)
         {
             List<Entity> entityListOut = new List<Entity>();
@@ -199,7 +199,7 @@ namespace MyDraw
             return entityListOut;
         }
 
-        // 補助線を削除
+        // 補助線を追加
         public List<Entity> RemoveSupportLine(IReadOnlyList<Entity> entityListIn)
         {
             List<Entity> entityListOut = new List<Entity>();
@@ -222,7 +222,7 @@ namespace MyDraw
         }
 
         // 点のまわりを熱くする
-        void fn(int x, int y)
+        void heating(int x, int y)
         {
             int xx, yy;
             for (yy = -4; yy <= 4; yy++)
@@ -315,7 +315,7 @@ namespace MyDraw
                             dY = Math.Sin(dT) * i + ((EntityLine)ent).StartPoint.Y;
                             entPoint = new Entity("", new Point((int)dX, (int)dY));
                             EntitylistOM.Add(entPoint);
-                            fn((int)entPoint.CenterPoint.X, (int)entPoint.CenterPoint.Y);
+                            heating((int)entPoint.CenterPoint.X, (int)entPoint.CenterPoint.Y);
                         }
 
                         dentityListOMLength += ((EntityLine)ent).Length;
@@ -334,7 +334,7 @@ namespace MyDraw
                             dY = Math.Sin(dT) * i + ((EntityLine)ent).StartPoint.Y;
                             entPoint = new Entity("", new Point((int)dX, (int)dY));
                             EntitylistOM.Add(entPoint);
-                            fn((int)entPoint.CenterPoint.X, (int)entPoint.CenterPoint.Y);
+                            heating((int)entPoint.CenterPoint.X, (int)entPoint.CenterPoint.Y);
                         }
                         break; // foreach()
                     }

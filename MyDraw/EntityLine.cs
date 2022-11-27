@@ -41,7 +41,7 @@ namespace MyDraw
         public bool IsSupport = false;  // 補助線の場合true
 
         // コンストラクタ
-        public EntityLine(string name, Point sPoint, Point ePoint) : base(name, sPoint)
+        public EntityLine(string name, Point sPoint, Point ePoint) : base(name, sPoint /* あとでCenterPointを更新 */)
         {
             Point point = new Point();
 

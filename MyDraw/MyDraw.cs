@@ -88,29 +88,8 @@ namespace MyDraw
             // 補助線は明るい緑色の線
             Pen penLineSupport = new Pen(Color.LightGreen, 1);
 
-#if false
-            // ぐりぐり回転はうまくいっていない
-            g.ResetTransform();
-            g.TranslateTransform((float)myship.xpos, (float)myship.ypos);
-            g.RotateTransform( (float) ((-myship.head_theta / Math.PI) * 180) - 90 /* look up */);
-            g.TranslateTransform(-(float)myship.xpos, -(float)myship.ypos);
-#endif
-
-            // 過去の残骸
-            g.DrawRectangle(
-                penRock,
-                (int)100, (int)100, 4 /* w */, 4 /* h */);
             // 過去の残骸
             g.DrawEllipse(penBullet, 200, 200, 3 /* w */, 3 /* h */);
-            // 過去の残骸
-            g.DrawLine(penShip,
-                (float)50,
-                (float)200,
-                (float)(50 + 10 * Math.Cos(1.0)),
-                (float)(200 + 10 * Math.Sin(1.0))
-                );
-            g.DrawString("MyShip", fnt, Brushes.White,
-                (float)50.0 + 8, (float)200 + 8);
 
             foreach (Entity ent in entityList)
             {
@@ -183,7 +162,7 @@ namespace MyDraw
             // draw a filled polygon specified by the array of Point
             g.FillPolygon(brushPolygon, arrayPoint, FillMode.Winding);
 
-            // 塗りつぶしの中の場合は、点を赤くしてみる。
+            // 自身と上下左右の塗りつぶされている点の数(最大5)を表示
             long lPointCheckCount = 0;  // 点と上下左右の数
             for (i = 0; i < lPointCount; i++)
             {
@@ -228,11 +207,8 @@ namespace MyDraw
                 {
                     lTextDiff.Y = -8;
                 }
-                // If all five points (if the point has 4 neighbor) are all filled, show text
-                //                if (lCnt == 255 * lPointCheckCount)
-                {
-                    g.DrawString((lCnt/255).ToString(), fnt, Brushes.Red, arrayPoint[i].X + lTextDiff.X, arrayPoint[i].Y + lTextDiff.Y);
-                }
+
+                g.DrawString((lCnt/255).ToString(), fnt, Brushes.Red, arrayPoint[i].X + lTextDiff.X, arrayPoint[i].Y + lTextDiff.Y);
             }
 
             fnt.Dispose();
@@ -269,9 +245,6 @@ namespace MyDraw
         Point sPoint = new Point(-1, -1);   // 始点
         Point ePoint = new Point(-1, -1);   // 終点
         int iLineNo = 0;                    // 線分の番号
-#if false
-        int iPointNo = 0;                   // 点の番号
-#endif
         EntityLine entityLineTemp = null;   // 指定途中の線
 
         // 受け取ったpointをBitMapの中に納まるようにする(BitMapの外でもMouseUpイベントを受け取ってしまうので)
