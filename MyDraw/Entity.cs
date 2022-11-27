@@ -40,7 +40,7 @@ namespace MyDraw
     // MyDrawで使用する描画パーツの親クラス
     class Entity
     {
-        public Point CenterPoint { get; set; }
+        public Point CenterPoint { get; set; }      // 中心
         public virtual string Name { get; set; }    // 名前
 
         public Entity(string name, Point point)
