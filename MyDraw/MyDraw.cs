@@ -231,7 +231,7 @@ namespace MyDraw
                 // If all five points (if the point has 4 neighbor) are all filled, show text
                 //                if (lCnt == 255 * lPointCheckCount)
                 {
-                    g.DrawString(lCnt.ToString(), fnt, Brushes.LightPink, arrayPoint[i].X + lTextDiff.X, arrayPoint[i].Y + lTextDiff.Y);
+                    g.DrawString((lCnt/255).ToString(), fnt, Brushes.Red, arrayPoint[i].X + lTextDiff.X, arrayPoint[i].Y + lTextDiff.Y);
                 }
             }
 
@@ -245,115 +245,24 @@ namespace MyDraw
 
         private void ShowHeatmap(PictureBox pic, List<Entity> entityList)
         {
-            // Bitmap canvas where this application draws lines.
             Bitmap canvas = new Bitmap(pic.Width, pic.Height);
-            Graphics g = Graphics.FromImage(canvas);
-
-            Font fnt = new Font("Arial", 10);
-            // 線分は白のグレー線
-            Pen penLine = new Pen(Color.LightGray, 1);
-
-            // count up the number of Points
-            long lPointCount;
-            lPointCount = 0;
-            foreach (Entity ent in entityList)
+            // Heat Map
+            for (int yy = 0; yy < Constant.CANVAS_SIZE_Y; yy++)
             {
-                if (ent.GetType() == typeof(EntityLine))
+                for (int xx = 0; xx < Constant.CANVAS_SIZE_X; xx++)
                 {
-                    lPointCount += 2;   // 線分には始点と終点の2点がある。
-                }
-            }
-            // make an array of Point
-            Point[] arrayPoint = new Point[lPointCount];
-            int i = 0;
-            foreach (Entity ent in entityList)
-            {
-                if (ent.GetType() == typeof(EntityLine))
-                {
-                    arrayPoint[i++] = ((EntityLine)ent).StartPoint;
-                    arrayPoint[i++] = ((EntityLine)ent).EndPoint;
-                }
-            }
-            // draw a filled polygon specified by the array of Point
-//            g.DrawLines(penLine, arrayPoint);
-
-            // 塗りつぶしの中の場合は、点を赤くしてみる。
-            long lPointCheckCount = 0;  // 点と上下左右の数
-            for (i = 0; i < lPointCount; i++)
-            {
-                long lCnt = 0;
-
-                lCnt += canvas.GetPixel(arrayPoint[i].X, arrayPoint[i].Y - 1).G;
-                if (arrayPoint[i].X > 1)
-                {
-                    lCnt += canvas.GetPixel(arrayPoint[i].X - 1, arrayPoint[i].Y).G;
-                    lPointCheckCount++;
-                }
-                if (arrayPoint[i].X < Constant.CANVAS_SIZE_X - 1)
-                {
-                    lCnt += canvas.GetPixel(arrayPoint[i].X + 1, arrayPoint[i].Y).G;
-                    lPointCheckCount++;
-                }
-                if (arrayPoint[i].Y > 1)
-                {
-                    lCnt += canvas.GetPixel(arrayPoint[i].X, arrayPoint[i].Y - 1).G;
-                    lPointCheckCount++;
-                }
-                if (arrayPoint[i].Y < Constant.CANVAS_SIZE_Y - 1)
-                {
-                    lCnt += canvas.GetPixel(arrayPoint[i].X, arrayPoint[i].Y + 1).G;
-                    lPointCheckCount++;
-                }
-
-            }
-
-            fnt.Dispose();
-            penLine.Dispose();
-            g.Dispose();
-
-            {
-                int cnt = 0;
-                BitmapData data = canvas.LockBits(
-                    new Rectangle(0, 0, canvas.Width, canvas.Height),
-                    ImageLockMode.ReadWrite,
-                    PixelFormat.Format32bppArgb);
-                byte[] buf = new byte[canvas.Width * canvas.Height * 4];
-                Marshal.Copy(data.Scan0, buf, 0, buf.Length);
-                for (int j = 0; j < buf.Length;)
-                {
-                    //byte grey = (byte)(0.299 * buf[j] + 0.587 * buf[j + 1] + 0.114 * buf[j + 2]);
-                    //buf[j++] = grey;
-                    //buf[j++] = grey;
-                    //buf[j++] = grey;
-                    if ((byte)(int)logic.dHeat[(j / 4) / Constant.CANVAS_SIZE_X, (j / 4) % Constant.CANVAS_SIZE_X] != 0)
+                    if (logic.dHeat[xx, yy] == 0)
                     {
-                        cnt++;
+                        continue;
                     }
-
-                    buf[j++] = (byte)(int)logic.dHeat[(j / 4) / Constant.CANVAS_SIZE_X, (j / 4) % Constant.CANVAS_SIZE_X];
-                    buf[j++] = 0;
-                    buf[j++] = 0;
-                    j++;
-                }
-                Marshal.Copy(buf, 0, data.Scan0, buf.Length);
-                canvas.UnlockBits(data);
-            }
-
-            int x, y;
-            for (y = 0; y < Constant.CANVAS_SIZE_Y; y++)
-            {
-                for (x = 0; x < Constant.CANVAS_SIZE_X; x++)
-                {
-                    if (logic.dHeat[x, y] != 0)
-                    {
-                        canvas.SetPixel(x, y, Color.FromArgb((int)logic.dHeat[x, y], 0, 0));
-                    }
+                    int tmp = Math.Min((int)logic.dHeat[xx, yy], 511);
+                    int tmpR = (tmp<128) ? 0 : Math.Min(tmp, 255);
+                    int tmpG = (tmp<128) ? tmp : Math.Min(511 - tmp, 255);
+                    canvas.SetPixel(xx, yy, Color.FromArgb(255, tmpR, tmpG, 0));
                 }
             }
-
             // Display canvas on "pic"
             pic.Image = canvas;
-
         }
 
         // picturebox mouse click, mouse down, mouse up to draw a line
@@ -365,7 +274,7 @@ namespace MyDraw
 #endif
         EntityLine entityLineTemp = null;   // 指定途中の線
 
-        // 受け取ったpointを資格の中に納まるようにする。
+        // 受け取ったpointをBitMapの中に納まるようにする(BitMapの外でもMouseUpイベントを受け取ってしまうので)
         private void FixPoint(ref Point point)
         {
             // Fix X
@@ -509,9 +418,12 @@ namespace MyDraw
             {
                 Show(picObjectMotion, logic.EntitylistOM);
             }
+            else if (lPic2Switch == 1)
+            {
+                ShowFillPolygon(picObjectMotion, logic.Entitylist);
+            }
             else
             {
-//                ShowFillPolygon(picObjectMotion, logic.Entitylist);
                 ShowHeatmap(picObjectMotion, logic.Entitylist);
             }
         }
@@ -551,19 +463,37 @@ namespace MyDraw
         private void radioButtonSim_CheckedChanged(object sender, EventArgs e)
         {
             lPic2Switch = 0;
-            panel2.Enabled = true;
+            panel2.Enabled = true;      // Speed
         }
         // Fillを行う
         private void radioButtonFill_CheckedChanged(object sender, EventArgs e)
         {
             lPic2Switch = 1;
-            panel2.Enabled = false;
+            panel2.Enabled = false;     // Speed
+        }
+        // Heat Mapを表示
+        private void radioButtonHeat_CheckedChanged(object sender, EventArgs e)
+        {
+            lPic2Switch = 2;
+            panel2.Enabled = true;      // Speed
         }
         // シミュレーション時の更新速度の調整
         private void TrackBarScroll(object sender, EventArgs e)
         {
             logic.iObjectMotionCntDiff = trackBarSpeed.Value;       // 進めるカウント数
             textBoxSpeed.Text = "Speed = " + trackBarSpeed.Value;   // 画面表示
+        }
+        // シミュレーション側だけ自動でソートする？
+        private void checkBoxAutoSort_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxAutoSort.Checked == false)
+            {
+                logic.CtrlAutoSortDisable();
+            }
+            else
+            {
+                logic.CtrlAutoSortEnable();
+            }
         }
 
         // コンソールをテキストボックスに出力するおまじない

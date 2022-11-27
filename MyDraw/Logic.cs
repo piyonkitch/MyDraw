@@ -47,7 +47,7 @@ namespace MyDraw
         public List<Entity> EntitylistOM { get; set; }
         public int iObjectMotionCntDiff = 1;   // 1 Tickで動かす個数
         private bool SupportLineValid = false;
-
+        private bool AutoSortValid = false;
 
         public double[,] dHeat = new double[Constant.CANVAS_SIZE_X, Constant.CANVAS_SIZE_Y];
 
@@ -73,6 +73,14 @@ namespace MyDraw
         {
             SupportLineValid = false;
             Entitylist = RemoveSupportLine(Entitylist);
+        }
+        public void CtrlAutoSortEnable()
+        {
+            AutoSortValid = true;
+        }
+        public void CtrlAutoSortDisable()
+        {
+            AutoSortValid = false;
         }
         public void CtrlSort()
         {
@@ -213,6 +221,35 @@ namespace MyDraw
             return entityListOut;
         }
 
+        // 点のまわりを熱くする
+        void fn(int x, int y)
+        {
+            int xx, yy;
+            for (yy = -4; yy <= 4; yy++)
+            {
+                if ((y + yy < 0) || (y + yy >= Constant.CANVAS_SIZE_Y))     // Out of bounds (dHeat)
+                {
+                    continue;   // yy
+                }
+
+                for (xx = -4; xx <= 4; xx++)
+                {
+                    double dLen = Math.Sqrt(Math.Pow(xx, 2) + Math.Pow(yy, 2));
+                    if ((x + xx < 0) || (x + xx >= Constant.CANVAS_SIZE_X)) // Out of bounds (dHeat)
+                    {
+                        continue;   // xx
+                    }
+                    if (dLen > 4)   // Radius 4
+                    {
+                        continue;   // xx
+                    }
+                    dHeat[x + xx, y + yy] += (4 - dLen) * 10 / 1.5;
+                }
+            }
+
+            return;
+        }
+
         // モノを動かす
         int iObjectMotionCnt = 0;
         public void CtrlObjectMotion()
@@ -233,8 +270,11 @@ namespace MyDraw
                     }
                 }
             }
-            // ソート
-            entityList = Sort(entityList);
+            // オートソート
+            if (AutoSortValid)
+            {
+                entityList = Sort(entityList);
+            }
             // 補助線
             entityList = AddSupportLine(entityList);
 
@@ -275,7 +315,7 @@ namespace MyDraw
                             dY = Math.Sin(dT) * i + ((EntityLine)ent).StartPoint.Y;
                             entPoint = new Entity("", new Point((int)dX, (int)dY));
                             EntitylistOM.Add(entPoint);
-                            dHeat[entPoint.CenterPoint.X, entPoint.CenterPoint.Y] += 30;
+                            fn((int)entPoint.CenterPoint.X, (int)entPoint.CenterPoint.Y);
                         }
 
                         dentityListOMLength += ((EntityLine)ent).Length;
@@ -294,7 +334,7 @@ namespace MyDraw
                             dY = Math.Sin(dT) * i + ((EntityLine)ent).StartPoint.Y;
                             entPoint = new Entity("", new Point((int)dX, (int)dY));
                             EntitylistOM.Add(entPoint);
-                            dHeat[entPoint.CenterPoint.X, entPoint.CenterPoint.Y] += 30;
+                            fn((int)entPoint.CenterPoint.X, (int)entPoint.CenterPoint.Y);
                         }
                         break; // foreach()
                     }

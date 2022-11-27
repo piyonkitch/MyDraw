@@ -31,7 +31,6 @@
             this.pic = new System.Windows.Forms.PictureBox();
             this.textBoxConsole = new System.Windows.Forms.TextBox();
             this.buttonSort = new System.Windows.Forms.Button();
-            this.buttonSupport = new System.Windows.Forms.Button();
             this.textBoxStatus = new System.Windows.Forms.TextBox();
             this.picObjectMotion = new System.Windows.Forms.PictureBox();
             this.radioButtonSim = new System.Windows.Forms.RadioButton();
@@ -41,6 +40,8 @@
             this.textBoxSpeed = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
             this.checkBoxSupport = new System.Windows.Forms.CheckBox();
+            this.radioButtonHeat = new System.Windows.Forms.RadioButton();
+            this.checkBoxAutoSort = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pic)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picObjectMotion)).BeginInit();
             this.panel1.SuspendLayout();
@@ -81,17 +82,6 @@
             this.buttonSort.Text = "Sort";
             this.buttonSort.UseVisualStyleBackColor = true;
             this.buttonSort.Click += new System.EventHandler(this.ButtonSort_Click);
-            // 
-            // buttonSupport
-            // 
-            this.buttonSupport.Location = new System.Drawing.Point(541, 51);
-            this.buttonSupport.Margin = new System.Windows.Forms.Padding(4);
-            this.buttonSupport.Name = "buttonSupport";
-            this.buttonSupport.Size = new System.Drawing.Size(100, 44);
-            this.buttonSupport.TabIndex = 3;
-            this.buttonSupport.Text = "Support Line";
-            this.buttonSupport.UseVisualStyleBackColor = true;
-            this.buttonSupport.Click += new System.EventHandler(this.ButtonSupport_Click);
             // 
             // textBoxStatus
             // 
@@ -140,6 +130,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.radioButtonHeat);
             this.panel1.Controls.Add(this.radioButtonSim);
             this.panel1.Controls.Add(this.radioButtonFill);
             this.panel1.Location = new System.Drawing.Point(675, 508);
@@ -164,11 +155,12 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.checkBoxAutoSort);
             this.panel2.Controls.Add(this.trackBarSpeed);
             this.panel2.Controls.Add(this.textBoxSpeed);
             this.panel2.Location = new System.Drawing.Point(873, 508);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(271, 61);
+            this.panel2.Size = new System.Drawing.Size(271, 101);
             this.panel2.TabIndex = 12;
             // 
             // checkBoxSupport
@@ -182,6 +174,29 @@
             this.checkBoxSupport.UseVisualStyleBackColor = true;
             this.checkBoxSupport.CheckedChanged += new System.EventHandler(this.checkBoxSupport_CheckedChanged);
             // 
+            // radioButtonHeat
+            // 
+            this.radioButtonHeat.AutoSize = true;
+            this.radioButtonHeat.Location = new System.Drawing.Point(4, 67);
+            this.radioButtonHeat.Name = "radioButtonHeat";
+            this.radioButtonHeat.Size = new System.Drawing.Size(92, 20);
+            this.radioButtonHeat.TabIndex = 14;
+            this.radioButtonHeat.TabStop = true;
+            this.radioButtonHeat.Text = "Heat Map";
+            this.radioButtonHeat.UseVisualStyleBackColor = true;
+            this.radioButtonHeat.CheckedChanged += new System.EventHandler(this.radioButtonHeat_CheckedChanged);
+            // 
+            // checkBoxAutoSort
+            // 
+            this.checkBoxAutoSort.AutoSize = true;
+            this.checkBoxAutoSort.Location = new System.Drawing.Point(21, 68);
+            this.checkBoxAutoSort.Name = "checkBoxAutoSort";
+            this.checkBoxAutoSort.Size = new System.Drawing.Size(95, 21);
+            this.checkBoxAutoSort.TabIndex = 14;
+            this.checkBoxAutoSort.Text = "Auto Sort";
+            this.checkBoxAutoSort.UseVisualStyleBackColor = true;
+            this.checkBoxAutoSort.CheckedChanged += new System.EventHandler(this.checkBoxAutoSort_CheckedChanged);
+            // 
             // MyDraw
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
@@ -192,7 +207,6 @@
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.picObjectMotion);
             this.Controls.Add(this.textBoxStatus);
-            this.Controls.Add(this.buttonSupport);
             this.Controls.Add(this.buttonSort);
             this.Controls.Add(this.textBoxConsole);
             this.Controls.Add(this.pic);
@@ -217,7 +231,6 @@
         private System.Windows.Forms.PictureBox pic;
         private System.Windows.Forms.TextBox textBoxConsole;
         private System.Windows.Forms.Button buttonSort;
-        private System.Windows.Forms.Button buttonSupport;
         private System.Windows.Forms.TextBox textBoxStatus;
         private System.Windows.Forms.PictureBox picObjectMotion;
         private System.Windows.Forms.RadioButton radioButtonSim;
@@ -227,6 +240,8 @@
         private System.Windows.Forms.TextBox textBoxSpeed;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.CheckBox checkBoxSupport;
+        private System.Windows.Forms.RadioButton radioButtonHeat;
+        private System.Windows.Forms.CheckBox checkBoxAutoSort;
     }
 }
 
