@@ -41,11 +41,11 @@ namespace MyDraw
 
     class Logic
     {
-        // 描画する方のリスト
+        // 左の表示のリスト
         public List<Entity> Entitylist { get; set; }
-        // 動かす方のリスト
+        // 右の表示のリスト(Object Motion用)
         public List<Entity> EntitylistOM { get; set; }
-        public int iObjectMotionCntDiff = 1;   // 1 Tickで動かす個数
+        public int iObjectMotionCntDiff = 1;   // 1 Tickで動かす距離(1は、１ピクセルの縦or横の長さの意味)
         private bool SupportLineValid = false;
         private bool AutoSortValid = false;
 
@@ -109,12 +109,9 @@ namespace MyDraw
                     entForSort.dRad = 
                         Math.Atan2((double)(- (ent.CenterPoint.Y - Constant.CANVAS_CENTER_Y)) /* REVISIT ここでYを反転したけど、後で変更するかも */,
                                    (double)(   ent.CenterPoint.X - Constant.CANVAS_CENTER_X));
-                    // Console.WriteLine(entForSort.dRad);
                     // 線分を覚えておく
                     entForSort.entityLine = (EntityLine)ent;
                     entityLinesForSortList.Add(entForSort);
-                    // entityListには線分を足さずに、後で足す
-                    // entityList.Add(ent);
 
                     // StartとEndがCCWになるようにする
                     bool doSwap = false;
@@ -162,7 +159,6 @@ namespace MyDraw
             }
 
             return entityListOut;
-            //Console.WriteLine("Entitylist count={0}", Entitylist.Count().ToString());
         }
 
         // 補助線を追加
@@ -225,25 +221,25 @@ namespace MyDraw
         void heating(int x, int y)
         {
             int xx, yy;
-            for (yy = -4; yy <= 4; yy++)
+            for (yy = -4; yy <= 4; yy++)        // REVISIT HARDCODE
             {
                 if ((y + yy < 0) || (y + yy >= Constant.CANVAS_SIZE_Y))     // Out of bounds (dHeat)
                 {
                     continue;   // yy
                 }
 
-                for (xx = -4; xx <= 4; xx++)
+                for (xx = -4; xx <= 4; xx++)    // REVISIT HARDCODE
                 {
                     double dLen = Math.Sqrt(Math.Pow(xx, 2) + Math.Pow(yy, 2));
                     if ((x + xx < 0) || (x + xx >= Constant.CANVAS_SIZE_X)) // Out of bounds (dHeat)
                     {
                         continue;   // xx
                     }
-                    if (dLen > 4)   // Radius 4
+                    if (dLen > 4)   // Radius 4    REVISIT HARDCODE
                     {
                         continue;   // xx
                     }
-                    dHeat[x + xx, y + yy] += (4 - dLen) * 10 / 1.5;
+                    dHeat[x + xx, y + yy] += (4 - dLen) * 10 / 1.5; // REVISIT HARDCODE
                 }
             }
 
@@ -257,7 +253,6 @@ namespace MyDraw
             List<Entity> entityList;
             int x, y;
 
-            // 右側のpicture box更新タイミング？
             // 補助線以外をコピー
             entityList = new List<Entity>();
             foreach (Entity ent in Entitylist)
@@ -341,7 +336,6 @@ namespace MyDraw
                 }
             }
 
-            // 長さ1だけ足す
             iObjectMotionCnt += iObjectMotionCntDiff;
             if (iObjectMotionCnt > dentityListLength + 1)
             {
