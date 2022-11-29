@@ -290,7 +290,7 @@ namespace MyDraw
             // 線分をリストに追加
             ePoint.X = e.X;
             ePoint.Y = e.Y;
-            FixPoint(ref ePoint);
+            FixPoint(ref ePoint);   // 0,0～CANVAS_SIZE_X-1,CANVAS_SIZE_Y-1の外に出ないようにする
 
             // pic_MouseMove()と同じ処理
             if (Control.ModifierKeys == Keys.Shift)
@@ -317,14 +317,10 @@ namespace MyDraw
             Entity entLine = new EntityLine("L" + iLineNo, sPoint, ePoint);
             logic.Entitylist.Add(entLine);
             iLineNo++;
-#if false
-            // プログラムテスト用
-            Entity ent = new Entity("P" + iPointNo, sPoint.X + 10, sPoint.Y + 10);
-            logic.Entitylist.Add(ent);
-            iPointNo++;
-#endif
+
             sPoint.X = sPoint.Y = ePoint.X = ePoint.Y = -1;
-            if(entityLineTemp != null)
+            // pic_MouseMove()で追加していたダミー線を削除
+            if (entityLineTemp != null)
             {
                 logic.Entitylist.Remove(entityLineTemp);
             }
@@ -342,13 +338,13 @@ namespace MyDraw
             textBoxStatus.Text = e.X.ToString() + "," + e.Y.ToString();
             if (sPoint.X >= 0 && sPoint.Y >= 0)
             {
+                // 前回のpic_MouseMove()で追加していたダミー線を削除
                 if (entityLineTemp != null)
                 {
                     logic.Entitylist.Remove(entityLineTemp);
                 }
 
                 // 指定線を引いているので、ダミー線を追加
-                // 「一時的な」線分をリストに追加
                 ePoint.X = e.X;
                 ePoint.Y = e.Y;
                 FixPoint(ref ePoint);
