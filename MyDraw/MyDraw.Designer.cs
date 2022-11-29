@@ -36,12 +36,12 @@
             this.radioButtonSim = new System.Windows.Forms.RadioButton();
             this.radioButtonFill = new System.Windows.Forms.RadioButton();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.radioButtonHeat = new System.Windows.Forms.RadioButton();
             this.trackBarSpeed = new System.Windows.Forms.TrackBar();
             this.textBoxSpeed = new System.Windows.Forms.TextBox();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.checkBoxSupport = new System.Windows.Forms.CheckBox();
-            this.radioButtonHeat = new System.Windows.Forms.RadioButton();
             this.checkBoxAutoSort = new System.Windows.Forms.CheckBox();
+            this.checkBoxSupport = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pic)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picObjectMotion)).BeginInit();
             this.panel1.SuspendLayout();
@@ -138,6 +138,18 @@
             this.panel1.Size = new System.Drawing.Size(192, 138);
             this.panel1.TabIndex = 9;
             // 
+            // radioButtonHeat
+            // 
+            this.radioButtonHeat.AutoSize = true;
+            this.radioButtonHeat.Location = new System.Drawing.Point(4, 67);
+            this.radioButtonHeat.Name = "radioButtonHeat";
+            this.radioButtonHeat.Size = new System.Drawing.Size(92, 20);
+            this.radioButtonHeat.TabIndex = 14;
+            this.radioButtonHeat.TabStop = true;
+            this.radioButtonHeat.Text = "Heat Map";
+            this.radioButtonHeat.UseVisualStyleBackColor = true;
+            this.radioButtonHeat.CheckedChanged += new System.EventHandler(this.radioButtonHeat_CheckedChanged);
+            // 
             // trackBarSpeed
             // 
             this.trackBarSpeed.Location = new System.Drawing.Point(11, 3);
@@ -163,29 +175,6 @@
             this.panel2.Size = new System.Drawing.Size(271, 101);
             this.panel2.TabIndex = 12;
             // 
-            // checkBoxSupport
-            // 
-            this.checkBoxSupport.AutoSize = true;
-            this.checkBoxSupport.Location = new System.Drawing.Point(540, 154);
-            this.checkBoxSupport.Name = "checkBoxSupport";
-            this.checkBoxSupport.Size = new System.Drawing.Size(114, 21);
-            this.checkBoxSupport.TabIndex = 13;
-            this.checkBoxSupport.Text = "Support Line";
-            this.checkBoxSupport.UseVisualStyleBackColor = true;
-            this.checkBoxSupport.CheckedChanged += new System.EventHandler(this.checkBoxSupport_CheckedChanged);
-            // 
-            // radioButtonHeat
-            // 
-            this.radioButtonHeat.AutoSize = true;
-            this.radioButtonHeat.Location = new System.Drawing.Point(4, 67);
-            this.radioButtonHeat.Name = "radioButtonHeat";
-            this.radioButtonHeat.Size = new System.Drawing.Size(92, 20);
-            this.radioButtonHeat.TabIndex = 14;
-            this.radioButtonHeat.TabStop = true;
-            this.radioButtonHeat.Text = "Heat Map";
-            this.radioButtonHeat.UseVisualStyleBackColor = true;
-            this.radioButtonHeat.CheckedChanged += new System.EventHandler(this.radioButtonHeat_CheckedChanged);
-            // 
             // checkBoxAutoSort
             // 
             this.checkBoxAutoSort.AutoSize = true;
@@ -197,11 +186,22 @@
             this.checkBoxAutoSort.UseVisualStyleBackColor = true;
             this.checkBoxAutoSort.CheckedChanged += new System.EventHandler(this.checkBoxAutoSort_CheckedChanged);
             // 
+            // checkBoxSupport
+            // 
+            this.checkBoxSupport.AutoSize = true;
+            this.checkBoxSupport.Location = new System.Drawing.Point(540, 154);
+            this.checkBoxSupport.Name = "checkBoxSupport";
+            this.checkBoxSupport.Size = new System.Drawing.Size(114, 21);
+            this.checkBoxSupport.TabIndex = 13;
+            this.checkBoxSupport.Text = "Support Line";
+            this.checkBoxSupport.UseVisualStyleBackColor = true;
+            this.checkBoxSupport.CheckedChanged += new System.EventHandler(this.checkBoxSupport_CheckedChanged);
+            // 
             // MyDraw
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1336, 676);
+            this.ClientSize = new System.Drawing.Size(1211, 676);
             this.Controls.Add(this.checkBoxSupport);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
@@ -212,7 +212,7 @@
             this.Controls.Add(this.pic);
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "MyDraw";
-            this.Text = "Form1";
+            this.Text = "MyDraw";
             this.Load += new System.EventHandler(this.MyDraw_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pic)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picObjectMotion)).EndInit();
