@@ -168,7 +168,7 @@ namespace MyDraw
             {
                 long lCnt = 0;
 
-                lCnt += canvas.GetPixel(arrayPoint[i].X,   arrayPoint[i].Y-1).G;
+                lCnt += canvas.GetPixel(arrayPoint[i].X,   arrayPoint[i].Y).G;
                 if (arrayPoint[i].X > 1)
                 {
                     lCnt += canvas.GetPixel(arrayPoint[i].X - 1, arrayPoint[i].Y).G;
