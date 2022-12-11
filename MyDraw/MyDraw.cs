@@ -165,33 +165,31 @@ namespace MyDraw
             g.FillPolygon(brushPolygon, arrayPoint, FillMode.Winding);
 
             // 自身と上下左右の塗りつぶされている点の数(最大5)を表示
-            long lPointCheckCount = 0;  // 点と上下左右の数
+            long[] lCnts = new long[lPointCount];
             for (i = 0; i < lPointCount; i++)
             {
-                long lCnt = 0;
-
-                lCnt += canvas.GetPixel(arrayPoint[i].X,   arrayPoint[i].Y).G;
+                lCnts[i] = 0;
+                lCnts[i] += canvas.GetPixel(arrayPoint[i].X, arrayPoint[i].Y).G;
                 if (arrayPoint[i].X > 1)
                 {
-                    lCnt += canvas.GetPixel(arrayPoint[i].X - 1, arrayPoint[i].Y).G;
-                    lPointCheckCount++;
+                    lCnts[i] += canvas.GetPixel(arrayPoint[i].X - 1, arrayPoint[i].Y).G;
                 }
                 if (arrayPoint[i].X < Constant.CANVAS_SIZE_X - 1)
                 {
-                    lCnt += canvas.GetPixel(arrayPoint[i].X + 1, arrayPoint[i].Y).G;
-                    lPointCheckCount++;
+                    lCnts[i] += canvas.GetPixel(arrayPoint[i].X + 1, arrayPoint[i].Y).G;
                 }
                 if (arrayPoint[i].Y > 1)
                 {
-                    lCnt += canvas.GetPixel(arrayPoint[i].X, arrayPoint[i].Y - 1).G;
-                    lPointCheckCount++;
+                    lCnts[i] += canvas.GetPixel(arrayPoint[i].X, arrayPoint[i].Y - 1).G;
                 }
                 if (arrayPoint[i].Y < Constant.CANVAS_SIZE_Y - 1)
                 {
-                    lCnt += canvas.GetPixel(arrayPoint[i].X,   arrayPoint[i].Y+1).G;
-                    lPointCheckCount++;
+                    lCnts[i] += canvas.GetPixel(arrayPoint[i].X, arrayPoint[i].Y + 1).G;
                 }
+            }
 
+            for (i = 0; i < lPointCount; i++)
+            {
                 Point lTextDiff = new Point(0, 0);
                 if (arrayPoint[i].X < Constant.CANVAS_SIZE_X / 2)
                 {
@@ -210,7 +208,7 @@ namespace MyDraw
                     lTextDiff.Y = -8;
                 }
 
-                g.DrawString((lCnt/255).ToString(), fnt, Brushes.Red, arrayPoint[i].X + lTextDiff.X, arrayPoint[i].Y + lTextDiff.Y);
+                g.DrawString((lCnts[i] /255).ToString(), fnt, Brushes.Red, arrayPoint[i].X + lTextDiff.X, arrayPoint[i].Y + lTextDiff.Y);
             }
 
             fnt.Dispose();
