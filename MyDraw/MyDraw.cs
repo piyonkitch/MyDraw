@@ -64,6 +64,8 @@ namespace MyDraw
             // GUIへのイベントハンドラをここで追加
             // pic(キャンバス)
             this.pic.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pic_MouseClick);
+
+            textBoxSpeed.Text = $"Speed = {logic.iObjectMotionCntDiff}";
         }
 
         // Display all entities in entityList on pic
@@ -450,7 +452,7 @@ namespace MyDraw
         private void TrackBarScroll(object sender, EventArgs e)
         {
             logic.iObjectMotionCntDiff = trackBarSpeed.Value;       // 進めるカウント数
-            textBoxSpeed.Text = "Speed = " + trackBarSpeed.Value;   // 画面表示
+            textBoxSpeed.Text = $"Speed = {trackBarSpeed.Value}";   // 画面表示
         }
         // シミュレーション側だけ自動でソートする？
         private void checkBoxAutoSort_CheckedChanged(object sender, EventArgs e)
