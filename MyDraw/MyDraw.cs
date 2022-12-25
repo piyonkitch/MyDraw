@@ -46,6 +46,7 @@ namespace MyDraw
         Timer timer;
         const int Dots = 1; // このプログラムは11pixelの□(四角)ではなく、点
         Logic logic = new Logic();
+        HeatPalette heatPalette; // 画面を表示してから初期化
 
         // エントリーポイント
         public MyDraw()
@@ -66,6 +67,10 @@ namespace MyDraw
             this.pic.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pic_MouseClick);
 
             textBoxSpeed.Text = $"Speed = {logic.iObjectMotionCntDiff}";
+
+            // ヒートマップパレットを作成＆表示
+            heatPalette = new HeatPalette();
+            heatPalette.SetPictureBox(pictureBoxPallete);
         }
 
         // Display all entities in entityList on pic
@@ -231,10 +236,7 @@ namespace MyDraw
                     {
                         continue;
                     }
-                    int tmp = Math.Min((int)logic.dHeat[xx, yy], 511);
-                    int tmpR = (tmp<128) ? 0 : Math.Min(tmp, 255);
-                    int tmpG = (tmp<128) ? tmp : Math.Min(511 - tmp, 255);
-                    canvas.SetPixel(xx, yy, Color.FromArgb(255, tmpR, tmpG, 0));
+                    canvas.SetPixel(xx, yy, heatPalette.colors[(int)logic.dHeat[xx, yy]]);
                 }
             }
             // Display canvas on "pic"

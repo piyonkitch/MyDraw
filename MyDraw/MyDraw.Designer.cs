@@ -42,20 +42,22 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.checkBoxAutoSort = new System.Windows.Forms.CheckBox();
             this.checkBoxSupport = new System.Windows.Forms.CheckBox();
+            this.pictureBoxPallete = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pic)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picObjectMotion)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).BeginInit();
             this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPallete)).BeginInit();
             this.SuspendLayout();
             // 
             // pic
             // 
             this.pic.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.pic.Location = new System.Drawing.Point(0, 0);
-            this.pic.Margin = new System.Windows.Forms.Padding(4);
+            this.pic.Margin = new System.Windows.Forms.Padding(5);
             this.pic.Name = "pic";
-            this.pic.Size = new System.Drawing.Size(533, 500);
+            this.pic.Size = new System.Drawing.Size(666, 600);
             this.pic.TabIndex = 0;
             this.pic.TabStop = false;
             this.pic.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pic_MouseDown);
@@ -64,20 +66,20 @@
             // 
             // textBoxConsole
             // 
-            this.textBoxConsole.Location = new System.Drawing.Point(0, 508);
-            this.textBoxConsole.Margin = new System.Windows.Forms.Padding(4);
+            this.textBoxConsole.Location = new System.Drawing.Point(0, 610);
+            this.textBoxConsole.Margin = new System.Windows.Forms.Padding(5);
             this.textBoxConsole.Multiline = true;
             this.textBoxConsole.Name = "textBoxConsole";
             this.textBoxConsole.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxConsole.Size = new System.Drawing.Size(640, 138);
+            this.textBoxConsole.Size = new System.Drawing.Size(799, 165);
             this.textBoxConsole.TabIndex = 1;
             // 
             // buttonSort
             // 
-            this.buttonSort.Location = new System.Drawing.Point(541, 0);
-            this.buttonSort.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonSort.Location = new System.Drawing.Point(676, 0);
+            this.buttonSort.Margin = new System.Windows.Forms.Padding(5);
             this.buttonSort.Name = "buttonSort";
-            this.buttonSort.Size = new System.Drawing.Size(100, 44);
+            this.buttonSort.Size = new System.Drawing.Size(125, 53);
             this.buttonSort.TabIndex = 2;
             this.buttonSort.Text = "Sort";
             this.buttonSort.UseVisualStyleBackColor = true;
@@ -86,19 +88,19 @@
             // textBoxStatus
             // 
             this.textBoxStatus.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.textBoxStatus.Location = new System.Drawing.Point(0, 654);
-            this.textBoxStatus.Margin = new System.Windows.Forms.Padding(4);
+            this.textBoxStatus.Location = new System.Drawing.Point(0, 785);
+            this.textBoxStatus.Margin = new System.Windows.Forms.Padding(5);
             this.textBoxStatus.Name = "textBoxStatus";
-            this.textBoxStatus.Size = new System.Drawing.Size(111, 22);
+            this.textBoxStatus.Size = new System.Drawing.Size(138, 25);
             this.textBoxStatus.TabIndex = 4;
             // 
             // picObjectMotion
             // 
             this.picObjectMotion.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.picObjectMotion.Location = new System.Drawing.Point(675, 0);
-            this.picObjectMotion.Margin = new System.Windows.Forms.Padding(4);
+            this.picObjectMotion.Location = new System.Drawing.Point(844, 0);
+            this.picObjectMotion.Margin = new System.Windows.Forms.Padding(5);
             this.picObjectMotion.Name = "picObjectMotion";
-            this.picObjectMotion.Size = new System.Drawing.Size(533, 500);
+            this.picObjectMotion.Size = new System.Drawing.Size(666, 600);
             this.picObjectMotion.TabIndex = 5;
             this.picObjectMotion.TabStop = false;
             // 
@@ -106,10 +108,10 @@
             // 
             this.radioButtonSim.AutoSize = true;
             this.radioButtonSim.Checked = true;
-            this.radioButtonSim.Location = new System.Drawing.Point(4, 15);
-            this.radioButtonSim.Margin = new System.Windows.Forms.Padding(4);
+            this.radioButtonSim.Location = new System.Drawing.Point(5, 18);
+            this.radioButtonSim.Margin = new System.Windows.Forms.Padding(5);
             this.radioButtonSim.Name = "radioButtonSim";
-            this.radioButtonSim.Size = new System.Drawing.Size(86, 20);
+            this.radioButtonSim.Size = new System.Drawing.Size(98, 22);
             this.radioButtonSim.TabIndex = 7;
             this.radioButtonSim.TabStop = true;
             this.radioButtonSim.Text = "Simulate";
@@ -119,9 +121,10 @@
             // radioButtonFill
             // 
             this.radioButtonFill.AutoSize = true;
-            this.radioButtonFill.Location = new System.Drawing.Point(4, 41);
+            this.radioButtonFill.Location = new System.Drawing.Point(5, 49);
+            this.radioButtonFill.Margin = new System.Windows.Forms.Padding(4);
             this.radioButtonFill.Name = "radioButtonFill";
-            this.radioButtonFill.Size = new System.Drawing.Size(49, 20);
+            this.radioButtonFill.Size = new System.Drawing.Size(55, 22);
             this.radioButtonFill.TabIndex = 8;
             this.radioButtonFill.TabStop = true;
             this.radioButtonFill.Text = "Fill";
@@ -133,17 +136,19 @@
             this.panel1.Controls.Add(this.radioButtonHeat);
             this.panel1.Controls.Add(this.radioButtonSim);
             this.panel1.Controls.Add(this.radioButtonFill);
-            this.panel1.Location = new System.Drawing.Point(675, 508);
+            this.panel1.Location = new System.Drawing.Point(844, 610);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(192, 138);
+            this.panel1.Size = new System.Drawing.Size(240, 166);
             this.panel1.TabIndex = 9;
             // 
             // radioButtonHeat
             // 
             this.radioButtonHeat.AutoSize = true;
-            this.radioButtonHeat.Location = new System.Drawing.Point(4, 67);
+            this.radioButtonHeat.Location = new System.Drawing.Point(5, 80);
+            this.radioButtonHeat.Margin = new System.Windows.Forms.Padding(4);
             this.radioButtonHeat.Name = "radioButtonHeat";
-            this.radioButtonHeat.Size = new System.Drawing.Size(92, 20);
+            this.radioButtonHeat.Size = new System.Drawing.Size(105, 22);
             this.radioButtonHeat.TabIndex = 14;
             this.radioButtonHeat.TabStop = true;
             this.radioButtonHeat.Text = "Heat Map";
@@ -152,17 +157,19 @@
             // 
             // trackBarSpeed
             // 
-            this.trackBarSpeed.Location = new System.Drawing.Point(11, 3);
+            this.trackBarSpeed.Location = new System.Drawing.Point(14, 4);
+            this.trackBarSpeed.Margin = new System.Windows.Forms.Padding(4);
             this.trackBarSpeed.Name = "trackBarSpeed";
-            this.trackBarSpeed.Size = new System.Drawing.Size(105, 69);
+            this.trackBarSpeed.Size = new System.Drawing.Size(131, 69);
             this.trackBarSpeed.TabIndex = 10;
             this.trackBarSpeed.Scroll += new System.EventHandler(this.TrackBarScroll);
             // 
             // textBoxSpeed
             // 
-            this.textBoxSpeed.Location = new System.Drawing.Point(122, 18);
+            this.textBoxSpeed.Location = new System.Drawing.Point(152, 22);
+            this.textBoxSpeed.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxSpeed.Name = "textBoxSpeed";
-            this.textBoxSpeed.Size = new System.Drawing.Size(124, 22);
+            this.textBoxSpeed.Size = new System.Drawing.Size(154, 25);
             this.textBoxSpeed.TabIndex = 11;
             // 
             // panel2
@@ -170,17 +177,19 @@
             this.panel2.Controls.Add(this.checkBoxAutoSort);
             this.panel2.Controls.Add(this.trackBarSpeed);
             this.panel2.Controls.Add(this.textBoxSpeed);
-            this.panel2.Location = new System.Drawing.Point(873, 508);
+            this.panel2.Location = new System.Drawing.Point(1091, 610);
+            this.panel2.Margin = new System.Windows.Forms.Padding(4);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(271, 101);
+            this.panel2.Size = new System.Drawing.Size(339, 121);
             this.panel2.TabIndex = 12;
             // 
             // checkBoxAutoSort
             // 
             this.checkBoxAutoSort.AutoSize = true;
-            this.checkBoxAutoSort.Location = new System.Drawing.Point(21, 68);
+            this.checkBoxAutoSort.Location = new System.Drawing.Point(26, 82);
+            this.checkBoxAutoSort.Margin = new System.Windows.Forms.Padding(4);
             this.checkBoxAutoSort.Name = "checkBoxAutoSort";
-            this.checkBoxAutoSort.Size = new System.Drawing.Size(95, 21);
+            this.checkBoxAutoSort.Size = new System.Drawing.Size(106, 22);
             this.checkBoxAutoSort.TabIndex = 14;
             this.checkBoxAutoSort.Text = "Auto Sort";
             this.checkBoxAutoSort.UseVisualStyleBackColor = true;
@@ -189,19 +198,29 @@
             // checkBoxSupport
             // 
             this.checkBoxSupport.AutoSize = true;
-            this.checkBoxSupport.Location = new System.Drawing.Point(540, 154);
+            this.checkBoxSupport.Location = new System.Drawing.Point(675, 185);
+            this.checkBoxSupport.Margin = new System.Windows.Forms.Padding(4);
             this.checkBoxSupport.Name = "checkBoxSupport";
-            this.checkBoxSupport.Size = new System.Drawing.Size(114, 21);
+            this.checkBoxSupport.Size = new System.Drawing.Size(130, 22);
             this.checkBoxSupport.TabIndex = 13;
             this.checkBoxSupport.Text = "Support Line";
             this.checkBoxSupport.UseVisualStyleBackColor = true;
             this.checkBoxSupport.CheckedChanged += new System.EventHandler(this.checkBoxSupport_CheckedChanged);
             // 
+            // pictureBoxPallete
+            // 
+            this.pictureBoxPallete.Location = new System.Drawing.Point(1091, 738);
+            this.pictureBoxPallete.Name = "pictureBoxPallete";
+            this.pictureBoxPallete.Size = new System.Drawing.Size(419, 38);
+            this.pictureBoxPallete.TabIndex = 14;
+            this.pictureBoxPallete.TabStop = false;
+            // 
             // MyDraw
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1211, 676);
+            this.ClientSize = new System.Drawing.Size(1514, 811);
+            this.Controls.Add(this.pictureBoxPallete);
             this.Controls.Add(this.checkBoxSupport);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
@@ -210,7 +229,7 @@
             this.Controls.Add(this.buttonSort);
             this.Controls.Add(this.textBoxConsole);
             this.Controls.Add(this.pic);
-            this.Margin = new System.Windows.Forms.Padding(4);
+            this.Margin = new System.Windows.Forms.Padding(5);
             this.Name = "MyDraw";
             this.Text = "MyDraw";
             this.Load += new System.EventHandler(this.MyDraw_Load);
@@ -221,6 +240,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPallete)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -242,6 +262,7 @@
         private System.Windows.Forms.CheckBox checkBoxSupport;
         private System.Windows.Forms.RadioButton radioButtonHeat;
         private System.Windows.Forms.CheckBox checkBoxAutoSort;
+        private System.Windows.Forms.PictureBox pictureBoxPallete;
     }
 }
 
