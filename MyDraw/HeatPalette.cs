@@ -25,7 +25,6 @@ namespace MyDraw
             }
         }
 
-        // 今のところ256pixelのみ
         public void SetPictureBox(PictureBox pic)
         {
             Bitmap canvas = new Bitmap(pic.Width, pic.Height);
