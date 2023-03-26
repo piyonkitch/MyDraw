@@ -248,6 +248,12 @@ namespace MyDraw
         Point ePoint = new Point(-1, -1);   // 終点
         int iLineNo = 0;                    // 線分の番号
         EntityLine entityLineTemp = null;   // 指定途中の線
+        enum PointModeEnum
+        {
+            Add,
+            Change,
+        };
+        PointModeEnum PointMode = PointModeEnum.Add;
 
         // 受け取ったpointをBitMapの中に納まるようにする(BitMapの外でもMouseUpイベントを受け取ってしまうので)
         private void FixPoint(ref Point point)
@@ -279,11 +285,20 @@ namespace MyDraw
         // MouseClickの代わりに、MouseDown()とMouseUp()で処理
         private void pic_MouseDown(object sender, MouseEventArgs e)
         {
-            Console.WriteLine(e.X.ToString() + "," + e.Y.ToString());
-            sPoint.X = e.X;
-            sPoint.Y = e.Y;
-            FixPoint(ref ePoint);
-            return;
+            if (PointMode == PointModeEnum.Add)
+            {
+                Console.WriteLine(e.X.ToString() + "," + e.Y.ToString());
+                sPoint.X = e.X;
+                sPoint.Y = e.Y;
+                FixPoint(ref ePoint);
+                return;
+            }
+            else
+            {
+                // PointModeEnum.Changeの処理
+                // 1.近いやつを選ぶ
+                logic.SetChangePoint(logic.Entitylist, e.X, e.Y);
+            }
         }
 
 
@@ -294,62 +309,9 @@ namespace MyDraw
             ePoint.Y = e.Y;
             FixPoint(ref ePoint);   // 0,0～CANVAS_SIZE_X-1,CANVAS_SIZE_Y-1の外に出ないようにする
 
-            // pic_MouseMove()と同じ処理
-            if (Control.ModifierKeys == Keys.Shift)
+            if (PointMode == PointModeEnum.Add)
             {
-                if (Math.Abs(ePoint.X - sPoint.X) > Math.Abs(ePoint.Y - sPoint.Y))
-                {
-                    // X方向の移動なので、Y固定
-                    ePoint.Y = sPoint.Y;
-                }
-                else
-                {
-                    // Y方向の移動なので、X固定
-                    ePoint.X = sPoint.X;
-                }
-            }
-
-            if (Math.Sqrt(Math.Pow(ePoint.X - sPoint.X, 2) + Math.Pow(ePoint.Y - sPoint.Y, 2)) <= 10)    // HARD CODE 10
-            {
-                // 近すぎる2点は線としない
-                sPoint.X = sPoint.Y = ePoint.X = ePoint.Y = -1;
-                return;
-            }
-
-            Entity entLine = new EntityLine("L" + iLineNo, sPoint, ePoint);
-            logic.Entitylist.Add(entLine);
-            iLineNo++;
-
-            sPoint.X = sPoint.Y = ePoint.X = ePoint.Y = -1;
-            // pic_MouseMove()で追加していたダミー線を削除
-            if (entityLineTemp != null)
-            {
-                logic.Entitylist.Remove(entityLineTemp);
-            }
-
-            // 線分を追加したので、補助線も追加する
-            if (logic.IsSupportLineValid())
-            {
-                logic.CtrlEnableSupportLine();
-            }
-
-            return;
-        }
-        private void pic_MouseMove(object sender, MouseEventArgs e)
-        {
-            textBoxStatus.Text = e.X.ToString() + "," + e.Y.ToString();
-            if (sPoint.X >= 0 && sPoint.Y >= 0)
-            {
-                // 前回のpic_MouseMove()で追加していたダミー線を削除
-                if (entityLineTemp != null)
-                {
-                    logic.Entitylist.Remove(entityLineTemp);
-                }
-
-                // 指定線を引いているので、ダミー線を追加
-                ePoint.X = e.X;
-                ePoint.Y = e.Y;
-                FixPoint(ref ePoint);
+                // pic_MouseMove()と同じ処理
                 if (Control.ModifierKeys == Keys.Shift)
                 {
                     if (Math.Abs(ePoint.X - sPoint.X) > Math.Abs(ePoint.Y - sPoint.Y))
@@ -363,15 +325,86 @@ namespace MyDraw
                         ePoint.X = sPoint.X;
                     }
                 }
-                entityLineTemp = new EntityLine("", sPoint, ePoint);
-                logic.Entitylist.Add(entityLineTemp);
-                ePoint.X = ePoint.Y = -1;
+
+                if (Math.Sqrt(Math.Pow(ePoint.X - sPoint.X, 2) + Math.Pow(ePoint.Y - sPoint.Y, 2)) <= 10)    // HARD CODE 10
+                {
+                    // 近すぎる2点は線としない
+                    sPoint.X = sPoint.Y = ePoint.X = ePoint.Y = -1;
+                    return;
+                }
+
+                Entity entLine = new EntityLine("L" + iLineNo, sPoint, ePoint);
+                logic.Entitylist.Add(entLine);
+                iLineNo++;
+
+                sPoint.X = sPoint.Y = ePoint.X = ePoint.Y = -1;
+                // pic_MouseMove()で追加していたダミー線を削除
+                if (entityLineTemp != null)
+                {
+                    logic.Entitylist.Remove(entityLineTemp);
+                }
 
                 // 線分を追加したので、補助線も追加する
                 if (logic.IsSupportLineValid())
                 {
                     logic.CtrlEnableSupportLine();
                 }
+
+                return;
+            }
+            else
+            {
+                // PointModeEnum.Changeの処理
+                // 3.確定
+                logic.UnsetChangePoint(logic.Entitylist);
+            }
+        }
+        private void pic_MouseMove(object sender, MouseEventArgs e)
+        {
+            textBoxStatus.Text = e.X.ToString() + "," + e.Y.ToString();
+            if (PointMode == PointModeEnum.Add)
+            {
+                if (sPoint.X >= 0 && sPoint.Y >= 0)
+                {
+                    // 前回のpic_MouseMove()で追加していたダミー線を削除
+                    if (entityLineTemp != null)
+                    {
+                        logic.Entitylist.Remove(entityLineTemp);
+                    }
+
+                    // 指定線を引いているので、ダミー線を追加
+                    ePoint.X = e.X;
+                    ePoint.Y = e.Y;
+                    FixPoint(ref ePoint);
+                    if (Control.ModifierKeys == Keys.Shift)
+                    {
+                        if (Math.Abs(ePoint.X - sPoint.X) > Math.Abs(ePoint.Y - sPoint.Y))
+                        {
+                            // X方向の移動なので、Y固定
+                            ePoint.Y = sPoint.Y;
+                        }
+                        else
+                        {
+                            // Y方向の移動なので、X固定
+                            ePoint.X = sPoint.X;
+                        }
+                    }
+                    entityLineTemp = new EntityLine("", sPoint, ePoint);
+                    logic.Entitylist.Add(entityLineTemp);
+                    ePoint.X = ePoint.Y = -1;
+
+                    // 線分を追加したので、補助線も追加する
+                    if (logic.IsSupportLineValid())
+                    {
+                        logic.CtrlEnableSupportLine();
+                    }
+                }
+            }
+            else
+            {
+                // PointModeEnum.Changeの処理
+                // 2.うごかす
+                logic.UpdateChangePoint(logic.Entitylist, e.X, e.Y);
             }
         }
 
@@ -426,6 +459,19 @@ namespace MyDraw
                 logic.CtrlEnableSupportLine();
             }
         }
+        
+        // 点追加モード
+        private void radioButtonAddPoint_CheckedChanged(object sender, EventArgs e)
+        {
+            PointMode = PointModeEnum.Add;
+        }
+
+        // 点変更モード
+        private void radioButtonChangePoint_CheckedChanged(object sender, EventArgs e)
+        {
+            PointMode = PointModeEnum.Change;
+        }
+
         private void ButtonObjectMotion_Click(object sender, EventArgs e)
         {
             logic.CtrlObjectMotion();
@@ -493,5 +539,6 @@ namespace MyDraw
         {
 
         }
+
     }
 }

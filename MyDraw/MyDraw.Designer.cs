@@ -43,12 +43,16 @@
             this.checkBoxAutoSort = new System.Windows.Forms.CheckBox();
             this.checkBoxSupport = new System.Windows.Forms.CheckBox();
             this.pictureBoxPallete = new System.Windows.Forms.PictureBox();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.radioButtonAddPoint = new System.Windows.Forms.RadioButton();
+            this.radioButtonChangePoint = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.pic)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picObjectMotion)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarSpeed)).BeginInit();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPallete)).BeginInit();
+            this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // pic
@@ -198,7 +202,7 @@
             // checkBoxSupport
             // 
             this.checkBoxSupport.AutoSize = true;
-            this.checkBoxSupport.Location = new System.Drawing.Point(675, 185);
+            this.checkBoxSupport.Location = new System.Drawing.Point(692, 339);
             this.checkBoxSupport.Margin = new System.Windows.Forms.Padding(4);
             this.checkBoxSupport.Name = "checkBoxSupport";
             this.checkBoxSupport.Size = new System.Drawing.Size(130, 22);
@@ -215,11 +219,45 @@
             this.pictureBoxPallete.TabIndex = 14;
             this.pictureBoxPallete.TabStop = false;
             // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.radioButtonChangePoint);
+            this.panel3.Controls.Add(this.radioButtonAddPoint);
+            this.panel3.Location = new System.Drawing.Point(675, 220);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(154, 92);
+            this.panel3.TabIndex = 15;
+            // 
+            // radioButtonAddPoint
+            // 
+            this.radioButtonAddPoint.AutoSize = true;
+            this.radioButtonAddPoint.Checked = true;
+            this.radioButtonAddPoint.Location = new System.Drawing.Point(17, 19);
+            this.radioButtonAddPoint.Name = "radioButtonAddPoint";
+            this.radioButtonAddPoint.Size = new System.Drawing.Size(106, 22);
+            this.radioButtonAddPoint.TabIndex = 0;
+            this.radioButtonAddPoint.TabStop = true;
+            this.radioButtonAddPoint.Text = "Add Point";
+            this.radioButtonAddPoint.UseVisualStyleBackColor = true;
+            this.radioButtonAddPoint.CheckedChanged += new System.EventHandler(this.radioButtonAddPoint_CheckedChanged);
+            // 
+            // radioButtonChangePoint
+            // 
+            this.radioButtonChangePoint.AutoSize = true;
+            this.radioButtonChangePoint.Location = new System.Drawing.Point(17, 47);
+            this.radioButtonChangePoint.Name = "radioButtonChangePoint";
+            this.radioButtonChangePoint.Size = new System.Drawing.Size(133, 22);
+            this.radioButtonChangePoint.TabIndex = 1;
+            this.radioButtonChangePoint.Text = "Change Point";
+            this.radioButtonChangePoint.UseVisualStyleBackColor = true;
+            this.radioButtonChangePoint.CheckedChanged += new System.EventHandler(this.radioButtonChangePoint_CheckedChanged);
+            // 
             // MyDraw
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1514, 811);
+            this.Controls.Add(this.panel3);
             this.Controls.Add(this.pictureBoxPallete);
             this.Controls.Add(this.checkBoxSupport);
             this.Controls.Add(this.panel2);
@@ -241,6 +279,8 @@
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPallete)).EndInit();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -263,6 +303,9 @@
         private System.Windows.Forms.RadioButton radioButtonHeat;
         private System.Windows.Forms.CheckBox checkBoxAutoSort;
         private System.Windows.Forms.PictureBox pictureBoxPallete;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.RadioButton radioButtonChangePoint;
+        private System.Windows.Forms.RadioButton radioButtonAddPoint;
     }
 }
 

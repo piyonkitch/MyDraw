@@ -43,6 +43,11 @@ namespace MyDraw
     {
         // 左の表示のリスト
         public List<Entity> Entitylist { get; set; }
+        // 変更点の参照
+        private EntityLine changeLine;  // 変更する線を覚えておく
+        private bool isChangeLineStart = false;
+        private Point changePoint;
+
         // 右の表示のリスト(Object Motion用)
         public List<Entity> EntitylistOM { get; set; }
         public int iObjectMotionCntDiff = 1;   // 1 Tickで動かす距離(1は、１ピクセルの縦or横の長さの意味)
@@ -215,6 +220,102 @@ namespace MyDraw
 
             // Update Entitylist
             return entityListOut;
+        }
+
+        //最も近い点をchangeLineとisChangeLineStartに設定
+        public void SetChangePoint(List<Entity> entityList, int x, int y)
+        {
+            foreach (Entity ent in entityList)
+            {
+                // 線分
+                if (ent.GetType() == typeof(EntityLine))
+                {
+                    if (((EntityLine)ent).IsSupport == false)
+                    {
+                        if (Math.Abs(((EntityLine)ent).StartPoint.X - x) < 5 &&
+                            Math.Abs(((EntityLine)ent).StartPoint.Y - y) < 5)
+                        {
+                            changeLine = (EntityLine)ent;
+                            isChangeLineStart = true;
+                            changePoint = new Point(x, y);
+                            return;
+                        }
+
+                        if (Math.Abs(((EntityLine)ent).EndPoint.X - x) < 5 &&
+                            Math.Abs(((EntityLine)ent).EndPoint.Y - y) < 5)
+                        {
+                            changeLine = (EntityLine)ent;
+                            isChangeLineStart = false;
+                            changePoint = new Point(x, y);
+                            return;
+                        }
+                    }
+                }
+            }
+            changeLine = null;
+        }
+
+        public void UpdateChangePoint(List<Entity> entityList, int x, int y)
+        {
+            if (changeLine == null)
+            {
+                return;
+            }
+
+            changePoint.X = x;
+            changePoint.Y = y;
+        }
+
+        public void UnsetChangePoint(List<Entity> entityList)
+        {
+            if (changeLine == null)
+            {
+                return;
+            }
+
+            foreach (Entity ent in entityList)
+            {
+                // 線分
+                if (ent.GetType() == typeof(EntityLine))
+                {
+                    if (((EntityLine)ent).IsSupport == false)
+                    {
+                        if (isChangeLineStart == true)
+                        {
+                            if (((EntityLine)ent).StartPoint.X == changeLine.StartPoint.X &&
+                                ((EntityLine)ent).StartPoint.Y == changeLine.StartPoint.Y)
+                            {
+                                Point point = new Point(changePoint.X, changePoint.Y);
+                                ((EntityLine)ent).StartPoint = point;
+                                changeLine = null;
+                                Entitylist = RemoveSupportLine(Entitylist);
+                                if (SupportLineValid)
+                                {
+                                    Entitylist = AddSupportLine(Entitylist);
+                                }
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            if (((EntityLine)ent).EndPoint.X == changeLine.EndPoint.X &&
+                                ((EntityLine)ent).EndPoint.Y == changeLine.EndPoint.Y)
+                            {
+                                Point point = new Point(changePoint.X, changePoint.Y);
+                                ((EntityLine)ent).EndPoint = point;
+                                changeLine = null;
+                                Entitylist = RemoveSupportLine(Entitylist);
+                                if (SupportLineValid)
+                                {
+                                    Entitylist = AddSupportLine(Entitylist);
+                                }
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+            changeLine = null;
         }
 
         // 点のまわりを熱くする
